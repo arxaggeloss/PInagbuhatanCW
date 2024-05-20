@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+
+    <title>Barangay Pinagbuhatan </title>
+</head>
+
+<body>
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    position: relative; /* Add this line */
+}
+    
+    /* Header styling */
+    .header {
+        display: flex; /* Use flexbox */
+        align-items: center; /* Align items vertically */
+        background-color: #252D6F;
+        color: #fff;
+        padding: 20px;
+        position: relative;
+    }
+
+    .header .icon {
+        color: #fff;
+        font-size: 24px;
+        margin-right: -49px; /* Adjust negative margin */
+        position: relative; /* Set position to relative */
+        z-index: 1; /* Ensure logo is above the title */
+    }
+
+    .header .title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center vertically */
+        margin-left: 17px; /* Adjust the margin */
+        background-color: #9eacb4; /* Light blue background */
+        color: #FFB802; /* Orange text color */
+        padding: 10px;
+        border-radius: 15px;
+        border: 2px solid orangered; /* Orange-red border */
+        position: relative;
+        z-index: 0; /* Ensure title is below the logo */
+    }
+
+    .header .title h2 {
+        margin-left: 20px;
+        font-size: 47px;
+        font-weight: bold;
+    }
+
+    .header .title p {
+        margin-left: 20px;
+        font-size: 27px;
+    }
+
+    .header .buttons-container {
+        display: flex;
+        margin-left: auto; /* Push buttons to the right */
+        padding-right: 0px; /* Add some padding on the right */
+        background-color: #e0f2f1; /* Light blue background */
+        border-radius: 5px;
+        border: 3px solid white; /* Orange-red border */
+    }
+
+    .header .buttons {
+        display: flex;
+        gap: 0; /* Remove the gap between buttons */
+    }
+
+    .header .buttons button {
+        background-color: orange;
+        color: white;
+        border: none;
+        border-radius: 2px; /* Rounder corners */
+        padding: 20px 20px; /* Increased padding */
+        cursor: pointer;
+        font-size: 16px; /* Increased font size */
+        font-weight: bold;
+        display: flex; /* Use flexbox */
+        flex-direction: column; /* Arrange icon and text vertically */
+        align-items: center; /* Center items horizontally */
+    }
+
+    .header .buttons button:last-child {
+        margin-right: 0; /* Remove margin from last button */
+    }
+
+    .header .buttons button img {
+        width: 30px; /* Increased icon size */
+        height: auto;
+        margin-bottom: 5px; /* Add margin between icon and text */
+    }
+
+    .page-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 80px);
+    }
+
+    .about-section {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 100px 20px;
+        background-color: #f2f2f2;
+        text-align: center;
+    }
+
+    .about-content h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+        /* About Section */
+        .about-section {
+            padding: 100px 20px;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .about-img {
+            width: 100%;
+            max-width: 400px; /* Adjust as needed */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+
+        .service-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .service-item h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+
+        /* Contact Section */
+        .contact-section {
+    padding: 100px 20px 50px; /* Adjust the bottom padding */
+    background-color: #0058a8;
+    color: #fff;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px; /* Add margin to create separation */
+}
+
+.contact-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contact-content h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+footer {
+    background-color: #252D6F;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+    position: absolute; /* Change position to absolute */
+    bottom: 0;
+    left: 0;
+}
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+        /* Know the District Section */
+        .know-the-district-section {
+            position: relative;
+            overflow: hidden;
+            background-image: url('images/balita.webp'); /* Replace 'district-background.jpg' with your actual image path */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* This ensures the background remains fixed as content scrolls */
+            padding: 100px 20px;
+        }
+
+        .district-container {
+            position: relative;
+            z-index: 1; /* Ensure the content stays above the background */
+        }
+
+        .district-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .district-captain {
+            flex: 1;
+        }
+
+        .district-captain-img {
+            width: 100%;
+            max-width: 400px; /* Adjust as needed */
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .district-explanation {
+            flex: 1;
+            max-width: 600px;
+            padding: 0 20px;
+            text-align: left;
+        }
+
+        .district-explanation h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .district-explanation p {
+            font-size: 18px;
+        }
+          /* Meet the Counselors section */
+          .counselors-section {
+            padding: 50px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .counselors-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .counselor {
+            display: inline-block;
+            margin: 0 20px;
+        }
+
+        .counselor img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .counselor-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .counselor-position {
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+
+<div class="header">
+    <div class="icon">
+        <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+    </div>
+    <div class="title">
+        <h2>Barangay Pinagbuhatan</h2>
+        <p>Community Website</p>
+    </div>
+    <div class="buttons-container">
+        <div class="buttons">
+            <button class="home-button" onclick="goToHomePage()"><img src="images/house.png"> Home</button>
+            <button class="about-button" onclick="showAboutPage()"><img src="images/multiple-users-silhouette.png"> About</button>
+            <button class="login-button" onclick="openLoginPage()"><img src="images/enter.png"> Login</button>
+        </div>
+    </div>
+</div>
+
+    <section id="know-the-district" class="know-the-district-section">
+        <div class="district-container">
+            <div class="district-content">
+                <div class="district-captain">
+                    <img src="IMAGES/barangay kapitan.jpeg" alt="District Captain" class="district-captain-img">
+                </div>
+                <div class="district-explanation">
+                    <h2 style="color:white;">Know the District</h2>
+                    <p style="color:white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget sem ut ipsum consectetur
+                        tempus.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="services-section">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+            <div class="service-item">
+                <h3>Service 1</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="service-item">
+                <h3>Service 2</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="service-item">
+                <h3>Service 3</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="service-item">
+                <h3>Service 4</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-area-02 pt-100 pb-50">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="portfolio mb-50">
+                        <div class="portfolio__img--04 pos-rel">
+                            <img src="IMAGES/barangay assembly.png" alt="Sample" class="about-img">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="about-wrapper-02">
+                        <div class="section-title mb-50">
+                            <h6 class="left_line pl-55">About us</h6>
+                            <h2 class="mb-20">If you change your city, you're changing the world.</h2>
+                            <span>Barangay Pinagbuhatan is determined to address everything that hinders its way to be
+                                the best.</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-wrapper porfolio-wrapper-02 pr-40 mb-50">
+                        <ul class="nav nav-tabs mb-40" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                    aria-controls="home" aria-selected="true"><span class="box-btn"></span> Our
+                                    Mission</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                    aria-controls="profile" aria-selected="false"><span class="box-btn"></span>Our
+                                    Vision</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                                    aria-controls="contact" aria-selected="false"><span class="box-btn"></span>Our
+                                    Goal</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="home" role="tabpanel"
+                                aria-labelledby="home-tab">
+                                <div class="portfolio pr-20">
+                                    <div class="portfolio__content">
+                                        <p class="mb-30">A Barangay that is God-centered, competent, orderly, honest,
+                                            peaceful, credible, gender-responsive, and abides by the Code of
+                                            Conduct.</p>
+                                    </div>
+                                    <div class="portfolio__query d-xl-flex align-items-center justify-content-between">
+                                        <div class="hotline">
+                                            <p>Call To Ask Any Questions</p>
+                                            <h3>(046) 884 6599</h3>
+                                        </div>
+                                        <div class="author d-flex align-items-center">
+                                            <div class="author__img mr-15">
+                                                <img src="IMAGES/barangay kapitan.jpeg" alt="Author"
+                                                    class="about-img">
+                                            </div>
+                                            <div class="author__content">
+                                                <p>Robin R. Salandanan</p>
+                                                <span>Barangay Kagawad</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="portfolio pr-20">
+                                    <div class="portfolio__content">
+                                        <p class="mb-30">To become a highly competitive and environmentally friendly
+                                            Barangay through efficient, effective, and responsive governance.</p>
+                                    </div>
+                                    <div class="portfolio__query d-xl-flex align-items-center justify-content-between">
+                                        <div class="hotline">
+                                            <p>Call To Ask Any Questions</p>
+                                            <h3>(046) 884 6599</h3>
+                                        </div>
+                                        <div class="author d-flex align-items-center">
+                                            <div class="author__img mr-15">
+                                                <img src="IMAGES/barangay kapitan.jpeg" alt="Author"
+                                                    class="about-img">
+                                            </div>
+                                            <div class="author__content">
+                                                <p>Robin R. Salandanan</p>
+                                                <span>Barangay Kagawad</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="contact" role="tabpanel"
+                                aria-labelledby="contact-tab">
+                                <div class="portfolio pr-20">
+                                    <div class="portfolio__content">
+                                        <p class="mb-30">To attain sustainable development by promoting peace and
+                                            order, enhancing economic viability, safeguarding environmental integrity,
+                                            and upholding the value of cooperation and unity among its constituents.
+                                        </p>
+                                    </div>
+                                    <div class="portfolio__query d-xl-flex align-items-center justify-content-between">
+                                        <div class="hotline">
+                                            <p>Call To Ask Any Questions</p>
+                                            <h3>(046) 884 6599</h3>
+                                        </div>
+                                        <div class="author d-flex align-items-center">
+                                            <div class="author__img mr-15">
+                                                <img src="IMAGES/barangay kapitan.jpeg" alt="Author"
+                                                    class="about-img">
+                                            </div>
+                                            <div class="author__content">
+                                                <p>Robin R. Salandanan</p>
+                                                <span>Barangay Kagawad</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="counselors-section">
+        <div class="container">
+            <h2 class="counselors-title">Meet the Counselors</h2>
+            <div class="counselors">
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Zandro C. Asilo</div>
+                        <div class="counselor-position">Barangay Kagawad</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Rodolfo J. Bugnot</div>
+                        <div class="counselor-position">Barangay Kagawad</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Antonio A. Bello</div>
+                        <div class="counselor-position">Barangay Kagawad</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Rosalie J. Umali</div>
+                        <div class="counselor-position">Barangay Kagawad</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Arcie V. Lucas</div>
+                        <div class="counselor-position">Barangay Kagawad</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Ramil C. Lontoc</div>
+                        <div class="counselor-position">Barangay Kagawad</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Jess B. Santos</div>
+                        <div class="counselor-position">Barangay Kagawad</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Rebecca C. Infante</div>
+                        <div class="counselor-position">Secretary</div>
+                    </div>
+                </div>
+                <div class="counselor">
+                    <img src="IMAGES/blank-profile.png" alt="Counselor 3">
+                    <div class="counselor-details">
+                        <div class="counselor-name">Marilyn C. Lontoc</div>
+                        <div class="counselor-position">Treasurer</div>
+                    </div>
+                </div>
+                
+                <section id="contact" class="contact-section">
+                    <div class="contact-content">
+                        <h2>Contact Us</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget sem ut ipsum consectetur
+                            tempus.</p>
+                        <a href="contact.html" class="cta-button">Get in Touch</a>
+                    </div>
+                </section>
+
+                <script>
+                    function goToHomePage() {
+                        // Define the action for the Home button (e.g., redirect to home page)
+                        window.location.href = "signup.php";
+                    }
+                
+                    function showAboutPage() {
+                        // Define the action for the About button (e.g., show about page content)
+                        window.location.href = "about.html";
+                    }
+                
+                    function openLoginPage() {
+                        // Define the action for the Login button (e.g., open login form)
+                        window.location.href = "login.php";
+                    }
+                </script>
+                
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                
+                <footer class="footer">
+                    <p>&copy; Barangay Pinagbuhatan. All rights reserved.</p>
+                </footer>
+</body>
+                </html>
+                

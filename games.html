@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Games</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <img src="IMAGES/Pasig-Logo.jpg">
+            <li><a class="nav-link" href="index.html">BARANGAY UPDATES</a></li>
+            <li class="dropdown">
+                <a class="nav-link" id="entertainment-link">ENTERTAINMENT</a>
+                <div class="dropdown-content">
+                    <a href="games.html">GAMES</a>
+                    <a href="events.php">EVENTS</a>
+                    <a href="travelguide.html">TRAVEL GUIDE</a>
+                </div>
+            </li>
+            <li><a class="nav-link" href="medicalassistance.html">MEDICAL ASSISTANCE</a></li>
+            <li><a class="nav-link" href="helpdesk.html">HELPDESK</a></li>
+            <li class="dropdown">
+                <a class="nav-link" id="sports-link">SPORTS</a>
+                <div class="dropdown-content">
+                    <a href="basketball.html">BASKETBALL</a>
+                    <a href="volleyball.html">VOLLEYBALL</a>
+                </div>
+            </li>
+            <li><a class="nav-link" href="user_profile.php">PROFILE</a></li>
+            <li><a class="nav-link" href="getnotifications.php">NOTIFICATIONS</a></li>
+        </ul>
+    </nav>
+    <div class="page-content">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .games-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            width: 30%;
+            background-color: #fff;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .game-card:hover {
+            transform: scale(1.05);
+            background-color: #59f113;
+        }
+
+        .game-image {
+            width: 95%;
+            height: auto;
+        }
+
+        .game-details {
+            display: none;
+            padding: 10px;
+        }
+
+        .game-card:hover .game-details {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .game-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+    <div class="games-container">
+        <div class="game-card">
+            <img class="game-image" src="IMAGES/chess.png" alt="Game 1">
+            <div class="game-details">
+                <h2>Chess</h2>
+                <p>Chess is a two-player strategy board game where each player starts with 16 pieces: one king, one queen, two rooks, two knights, two bishops, and eight pawns. The objective is to checkmate the opponent's king.</p>
+            </div>
+            <div class="game-link">
+                <a href="https://www.chess.com/play/computer" target="_blank">Play Chess</a>
+            </div>
+        </div>
+        <div class="game-card">
+          <img class="game-image" src="IMAGES/solitaire.png" alt="Game 2">
+          <div class="game-details">
+              <h2>Solitaire</h2>
+              <p>Solitaire is a classic single-player card game where the objective is to organize a deck of cards in a specific order, often by suit and in ascending order.</p>
+          </div>
+          <div class="game-link">
+              <a href="https://solitaired.com" target="_blank">Play Solitaire</a>
+          </div>
+      </div>
+        <div class="game-card">
+          <img class="game-image" src="IMAGES/mahjong.jpg" alt="Game 3">
+          <div class="game-details">
+              <h2>Mahjong</h2>
+              <p>Mahjong is a tile-based game that originated in China. Players match pairs of tiles with the goal of clearing the entire board, employing strategy and memory.</p>
+          </div>
+          <div class="game-link">
+              <a href="https://games.usatoday.com/games/free-online-mahjong" target="_blank">Play Mahjong</a>
+          </div>
+      </div>
+      <div class="game-card">
+        <img class="game-image" src="IMAGES/sudoku.jpg" alt="Game 4">
+        <div class="game-details">
+            <h2>Sudoku</h2>
+            <p>Sudoku is a number puzzle game where players fill a 9x9 grid with digits so that each column, each row, and each of the nine 3x3 subgrids contain all of the digits from 1 to 9.</p>
+        </div>
+        <div class="game-link">
+            <a href="https://www.nytimes.com/puzzles/sudoku" target="_blank">Play Sudoku</a>
+        </div>
+    </div>
+    <div class="game-card">
+      <img class="game-image" src="IMAGES/scrabble.jpeg" alt="Game 5">
+      <div class="game-details">
+          <h2>Scrabble</h2>
+          <p>Scrabble is a word game where players use letter tiles to create words on a game board. Each letter has a point value, and players compete to score the most points by strategically placing their words.</p>
+      </div>
+      <div class="game-link">
+          <a href="https://playscrabble.com/play/ai" target="_blank">Play Scrabble</a>
+      </div>
+  </div>
+  <div class="game-card">
+    <img class="game-image" src="IMAGES/bingo.jpg" alt="Game 6">
+    <div class="game-details">
+        <h2>Bingo</h2>
+        <p>Bingo is a game of chance where players mark off numbers on cards as they are randomly drawn. The goal is to complete a predetermined pattern on the card and shout "Bingo!"</p>
+    </div>
+    <div class="game-link">
+        <a href="https://www.funnygames.org/game/bingo_75.html" target="_blank">Play Bingo</a>
+    </div>
+</div>
+<div class="game-card">
+  <img class="game-image" src="IMAGES/slots.png" alt="Game 7">
+  <div class="game-details">
+      <h2>Slots</h2>
+      <p>Slot machine games involve spinning reels with various symbols. Players win prizes based on the combinations of symbols that appear when the reels stop spinning.</p>
+  </div>
+  <div class="game-link">
+      <a href="https://bet88.ph/en/casino/2/slots" target="_blank">Play Slots</a>
+  </div>
+</div>
+<div class="game-card">
+  <img class="game-image" src="IMAGES/checkers.png" alt="Game 8">
+  <div class="game-details">
+      <h2>Checkers</h2>
+      <p>Checkers is a classic board game where players aim to capture their opponent's pieces or block them to achieve victory. Many online platforms offer the chance to play Checkers against friends or other players, providing a simple yet engaging strategy game.</p>
+  </div>
+  <div class="game-link">
+      <a href="https://checkers.online/play" target="_blank">Play Checkers</a>
+  </div>
+</div>
+<div class="game-card">
+  <img class="game-image" src="IMAGES/poker.png" alt="Game 9">
+  <div class="game-details">
+      <h2>Poker</h2>
+      <p>Poker is a card game that combines skill, strategy, and chance. Online poker allows players to compete against each other in various versions, such as Texas Hold'em, Omaha, and more. Players aim to have the best hand or to bluff others into folding</p>
+  </div>
+  <div class="game-link">
+      <a href="https://www.247freepoker.com" target="_blank">Play Poker</a>
+  </div>
+</div>
+<div class="game-card">
+  <img class="game-image" src="IMAGES/wordsearch.png" alt="Game 10">
+  <div class="game-details">
+      <h2>Daily Wordsearch</h2>
+      <p>Daily Wordsearch is an online word search game where players connect adjacent letters to form words and clear them from the grid. It's a simple yet addictive game that can be played directly in a web browser without the need for downloads.</p>
+  </div>
+  <div class="game-link">
+      <a href="https://games.washingtonpost.com/games/daily-word-search" target="_blank">Play Daily Wordsearch</a>
+  </div>
+</div>
+
+    </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sportsLink = document.getElementById('sports-link');
+            const sportsDropdown = document.querySelector('#sports-link + .dropdown-content');
+    
+            sportsLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                sportsDropdown.classList.toggle('active');
+            });
+    
+            // Close sports dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!sportsLink.contains(event.target) && !sportsDropdown.contains(event.target)) {
+                    sportsDropdown.classList.remove('active');
+                }
+            });
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

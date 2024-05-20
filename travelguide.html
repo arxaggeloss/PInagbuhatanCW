@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Travel Guide</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <img src="IMAGES/Pasig-Logo.jpg">
+            <li><a class="nav-link" href="index.html">BARANGAY UPDATES</a></li>
+            <li class="dropdown">
+                <a class="nav-link" id="entertainment-link">ENTERTAINMENT</a>
+                <div class="dropdown-content">
+                    <a href="games.html">GAMES</a>
+                    <a href="events.php">EVENTS</a>
+                    <a href="travelguide.html">TRAVEL GUIDE</a>
+                </div>
+            </li>
+            <li><a class="nav-link" href="medicalassistance.html">MEDICAL ASSISTANCE</a></li>
+            <li><a class="nav-link" href="helpdesk.html">HELPDESK</a></li>
+            <li class="dropdown">
+                <a class="nav-link" id="sports-link">SPORTS</a>
+                <div class="dropdown-content">
+                    <a href="basketball.html">BASKETBALL</a>
+                    <a href="volleyball.html">VOLLEYBALL</a>
+                </div>
+            </li>
+            <li><a class="nav-link" href="user_profile.php">PROFILE</a></li>
+            <li><a class="nav-link" href="getnotifications.php">NOTIFICATIONS</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-content">
+      <style>
+/* Your existing CSS code goes here */
+
+.vertical-carousel-container {
+    padding: 10%;
+    height: 200%;
+    width: 180%; /* Adjust the width as needed */
+    margin: 0 10px;
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;
+}
+
+.vertical-carousel {
+    display: block;
+}
+
+.image-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.image-wrapper img {
+    width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 0 10px 0;
+    filter: blur(5px); /* Initial blur effect on images */
+    transition: transform 0.3s, filter 0.3s; /* Transition for transform and filter */
+}
+
+.image-wrapper img:hover {
+    transform: scale(1.1);
+    filter: none; /* Remove blur effect when hovering */
+}
+
+.destination-details {
+    color: black;
+    text-shadow: -1px 1px 0 white, 1px 1px 0 white, 1px -1px 0 white, -1px -1px 0 white; 
+    font-weight: bold;
+    padding-left: 10%;
+    margin-left: 10px;
+    margin-top: 10px; /* Add margin to the top of the description */
+    transition: margin-left 0.3s, opacity 0.3s; /* Transition for margin-left and opacity */
+    opacity: 0; /* Initially hide the description */
+}
+
+.image-wrapper:hover .destination-details {
+    margin-left: 1; /* Show the description when hovering */
+    opacity: 1; /* Show the description when hovering */
+}
+
+      </style>
+<div class="headline">
+  <div class="headline-image">
+      <div class="vertical-carousel-container">
+          <div class="vertical-carousel">
+              <div class="image-wrapper">
+                <img src="IMAGES/Manila-American-Cemetary.jpg" alt="Manila American Cemetery and Memorial">
+                  <div class="destination-details">
+                      <h3 id="destination-title"> Manila American Cemetery and Memorial</h3>
+                      <p id="data-description">The Manila American Cemetery and Memorial is a solemn and significant military cemetery located in Taguig City, Metro Manila, Philippines. Established in 1948, the cemetery serves as the final resting place for the fallen soldiers of the United States and its allies who fought in the Pacific theater during World War II. Situated on 152 acres, it is one of the largest American overseas military cemeteries.</p>
+                  </div>
+              </div>
+              <div class="image-wrapper">
+                <img src="IMAGES/bgc.jpg" alt="Bonifacio Global City">
+                  <div class="destination-details">
+                      <h3 id="destination-title">Bonifacio Global City</h3>
+                      <p id="data-description">Bonifacio Global City (BGC) is a modern and rapidly developing financial and lifestyle district in Metro Manila, Philippines. Formerly a military base, it has transformed into a bustling urban center known for its cosmopolitan atmosphere, high-rise buildings, green spaces, and a vibrant mix of residential, commercial, and recreational areas.</p>
+                  </div>
+              </div>
+              <div class="image-wrapper">
+                <img src="IMAGES/venice.webp" alt="Venice Grand Canal Mall ">
+                  <div class="destination-details">
+                      <h3 id="destination-title">Venice Grand Canal Mall </h3>
+                      <p id="data-description">Venice Grand Canal Mall is an upscale shopping and lifestyle destination situated within the McKinley Hill development in Taguig City, Metro Manila, Philippines. Inspired by the iconic Italian city of Venice, the mall replicates the romantic ambiance and architectural elements of Venice, complete with a man-made canal that runs through the center of the complex.</p>
+                  </div>
+              </div>
+              <div class="image-wrapper">
+                <img src="IMAGES/mind museum.jpg" alt="The Mind Museum">
+                  <div class="destination-details">
+                      <h3 id="destination-title">The Mind Museum</h3>
+                      <p id="data-description">The Mind Museum is a world-class science museum located in Bonifacio Global City, Taguig, Metro Manila, Philippines. It's known for its interactive exhibits and engaging displays that cover various fields of science, technology, and natural history.</p>
+                  </div>
+              </div>
+              <div class="image-wrapper">
+                <img src="IMAGES/sm aura.jpg" alt="SM Aura Premier">
+                  <div class="destination-details">
+                      <h3 id="destination-title">SM Aura Premier</h3>
+                      <p id="data-description">SM Aura Premier is a upscale shopping mall located in Bonifacio Global City, Taguig, Metro Manila, Philippines. It is part of the SM Supermalls chain, known for its luxurious and contemporary design, offering a wide range of retail, dining, entertainment, and leisure options.</p>
+                  </div>
+              </div>
+              <div class="image-wrapper">
+                <img src="IMAGES/pamla.jpg" alt="Philippine Army Museum Library and Archives">
+                  <div class="destination-details">
+                      <h3 id="destination-title">Philippine Army Museum Library and Archives</h3>
+                      <p id="data-description">The Philippine Army Museum, Library, and Archives (PAMLA) is an institution that aims to preserve and showcase the history, heritage, and accomplishments of the Philippine Army. It serves as a repository of historical artifacts, documents, photographs, and memorabilia related to the army's rich history and contributions to the country.</p>
+                  </div>
+              </div>
+              <div class="image-wrapper">
+                <img src="IMAGES/balita.webp" alt="Sta.Ana Church">
+                  <div class="destination-details">
+                      <h3 id="destination-title">Sta.Ana Church</h3>
+                      <p id="data-description">The Saint Anne Parish Church, also known as Santa Ana Church or also known in its formal name as the Minor Basilica and Archdiocesan Shrine of St. Anne, is a Roman Catholic church and minor basilica located in Barangay Santa Ana, Taguig, Philippines. It is situated next to the Taguig River and across Plaza Quezon, where the statue of Manuel L. Quezon was erected when he was still serving as President of the Philippines. Saint Anne is the patroness of the church.</p>
+                  </div>
+              </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="headline-content">
+  </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sportsLink = document.getElementById('sports-link');
+        const sportsDropdown = document.querySelector('#sports-link + .dropdown-content');
+
+        sportsLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            sportsDropdown.classList.toggle('active');
+        });
+
+        // Close sports dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!sportsLink.contains(event.target) && !sportsDropdown.contains(event.target)) {
+                sportsDropdown.classList.remove('active');
+            }
+        });
+    });
+</script>
+    <script>
+// JavaScript for vertical carousel functionality
+const container = document.querySelector('.vertical-carousel-container');
+const images = document.querySelectorAll('.vertical-carousel img');
+const destinationTitle = document.getElementById('destination-title');
+const destinationDescription = document.getElementById('destination-description');
+
+function showImage(image) {
+    images.forEach(img => {
+        img.style.transform = 'scale(1)';
+        img.style.filter = 'blur(5px)';
+    });
+
+    image.style.transform = 'scale(1.1)';
+    image.style.filter = 'none';
+
+    // Set the background image for the container
+    container.style.backgroundImage = `url(${image.src})`;
+
+    // Update destination details using alt and data-description attributes
+    destinationTitle.textContent = image.alt;
+    destinationDescription.textContent = image.dataset.description || ''; // If data-description is empty, set an empty string
+}
+
+images.forEach(img => {
+    img.addEventListener('mouseover', () => {
+        showImage(img);
+    });
+});
+
+// Initialize with the first image
+showImage(images[0]);
+    </script>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

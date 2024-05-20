@@ -1,0 +1,154 @@
+/* Reset default margin and padding for all elements */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e2e1e1;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #ffffff;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+img {
+    width: 150px;
+    height: auto;
+    margin: 10px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+nav li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    background-color: #008fd1;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link:hover {
+    background-color: #003674;
+    color: white;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    border-radius: 10px;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    z-index: 10;
+}
+
+.dropdown-content.active {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.dropdown-content a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dropdown-content a:hover {
+    color: white;
+    background-color: #4CAfd1;
+}
+
+.headline {
+    display: flex;
+    background-color: #e2e1e1;
+    margin: 10px;
+}
+
+.headline-image {
+    width: 50%;
+    height: 500px;
+    margin-right: 20px;
+}
+
+.headline h2 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.headline-content {
+    flex: 1;
+    text-align: center; /* Center the content */
+}
+
+.news-details {
+    font-size: 16px;
+    line-height: 2; /* Set line height for double spacing */
+    margin: 0 auto; /* Center the element within its container */
+    max-width: 600px; /* Adjust the maximum width as needed */
+}
+.small-news-container {
+    background-color: #008fd1; /* Change to a different color */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    overflow: auto;
+}
+
+
+.small-news {
+    flex: 1;
+    background-color: #e2e1e1;
+    margin: 10px;
+}
+
+.small-news-image {
+    width: 100%;
+    height: auto;
+}
+
+.small-news h3 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.small-news-content {
+    display: flex;
+    flex-direction: column; 
+}
+
+article {
+    border: none;
+    padding: 0;
+}
+

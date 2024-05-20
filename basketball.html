@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css"> 
+  <title>Basketball Game Schedule</title>
+</head>
+
+
+<body>
+    <nav>
+        <ul>
+            <img src="IMAGES/Pasig-Logo.jpg">
+            <li><a class="nav-link" href="index.html">BARANGAY UPDATES</a></li>
+            <li class="dropdown">
+                <a class="nav-link" id="entertainment-link">ENTERTAINMENT</a>
+                <div class="dropdown-content">
+                    <a href="games.html">GAMES</a>
+                    <a href="events.php">EVENTS</a>
+                    <a href="travelguide.html">TRAVEL GUIDE</a>
+                </div>
+            </li>
+            <li><a class="nav-link" href="medicalassistance.html">MEDICAL ASSISTANCE</a></li>
+            <li><a class="nav-link" href="helpdesk.html">HELPDESK</a></li>
+            <li class="dropdown">
+                <a class="nav-link" id="sports-link">SPORTS</a>
+                <div class="dropdown-content">
+                    <a href="basketball.html">BASKETBALL</a>
+                    <a href="volleyball.html">VOLLEYBALL</a>
+                </div>
+            </li>
+            <li><a class="nav-link" href="user_profile.php">PROFILE</a></li>
+            <li><a class="nav-link" href="getnotifications.php">NOTIFICATIONS</a></li>
+        </ul>
+    </nav>
+    <style>
+        /* Reset default margin and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column; /* Set the content in a column */
+    align-items: center;
+}
+
+nav {
+    width: 100%; /* Make the nav bar full width */
+}
+
+.schedule-container {
+    width: 90%;
+    max-width: 900px;
+    background: linear-gradient(to left, #27ae60, #3498db); 
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    overflow: hidden;
+    margin: 20px auto; /* Add margin to center it within the body */
+}
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 36px;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            position: relative;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        th, td {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: slideIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        th {
+            background-color: #063c68;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        td {
+            background-color: #fff;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover effect for table rows */
+        tr:hover td {
+            background-color: #e3f2fd;
+            color: #555;
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+  <div class="schedule-container">
+    <h1>Basketball Game Schedule</h1>
+    <table id="schedule-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Away</th>
+          <th>Home</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody id="schedule-body">
+        <!-- Schedule content will be added dynamically using JavaScript -->
+      </tbody>
+    </table>
+  </div>
+<script>
+    // Sample game schedule data
+const games = [
+  { date: 'January 10, 2023', away: 'Team A', home: 'Team B', location: 'Arena 1' },
+  { date: 'January 15, 2023', away: 'Team C', home: 'Team D', location: 'Arena 2' },
+  { date: 'January 20, 2023', away: 'Team E', home: 'Team F', location: 'Arena 3' },
+  { date: 'January 25, 2023', away: 'Team G', home: 'Team H', location: 'Arena 4' },
+  { date: 'January 30, 2023', away: 'Team I', home: 'Team J', location: 'Arena 5' }
+];
+
+// Function to populate the schedule table
+function populateSchedule() {
+  const scheduleBody = document.getElementById('schedule-body');
+
+  games.forEach(game => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${game.date}</td>
+      <td>${game.away}</td>
+      <td>${game.home}</td>
+      <td>${game.location}</td>
+    `;
+    scheduleBody.appendChild(row);
+  });
+}
+
+// Call the function to populate the schedule table
+populateSchedule();
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sportsLink = document.getElementById('sports-link');
+        const sportsDropdown = document.querySelector('#sports-link + .dropdown-content');
+
+        sportsLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            sportsDropdown.classList.toggle('active');
+        });
+
+        // Close sports dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!sportsLink.contains(event.target) && !sportsDropdown.contains(event.target)) {
+                sportsDropdown.classList.remove('active');
+            }
+        });
+    });
+</script>
+  <script src="script.js"></script>
+</body>
+
+</html>
