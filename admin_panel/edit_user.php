@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tandaandb";
+   $servername = "pinagbuhatancw.mysql.database.azure.com";
+$username_db = "pinagbuhatancw";
+$password_db = 'pa$$word1';
+$database = "tandaandb";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
