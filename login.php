@@ -20,10 +20,10 @@ $remaining_time = 0; // Initialize remaining_time variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Database connection parameters
-    $servername = "localhost";
-    $db_username = "root";
-    $db_password = "";
-    $database = "tandaandb";
+   $servername = "pinagbuhatancw.mysql.database.azure.com";
+$username_db = "pinagbuhatancw";
+$password_db = 'pa$$word1';
+$database = "tandaandb";
 
     // Create a connection to the database
     $conn = new mysqli($servername, $db_username, $db_password, $database);
