@@ -49,8 +49,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user_row['password'])) {
             // Login successful
             // Set a session variable to remember the user's login status
-            $_SESSION['loggedin_user_id'] = $user_row['userid']; // Use your appropriate column name for user ID
-            header("Location: index.html"); // Redirect to the main page
+            $_SESSION['loggedin_user_id'] = $user_row['userid'];
+            resetFailedLoginAttempts(); // Reset failed login attempts on successful login
+            header("Location: /index.html"); // Ensure correct path
             exit();
         } else {
             // Password is incorrect
@@ -73,13 +74,80 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
     unset($_SESSION['countdown_expires']);
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <form action="login.php" method="post">
+        <input type="text" name="inputname" placeholder="Username or Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <?php
+        if (getFailedLoginAttempts() >= 3) {
+            if (!isset($_SESSION['countdown_expires'])) {
+                $_SESSION['countdown_expires'] = time() + 30; // 30 seconds countdown
+            }
+            $remaining_time = max(0, $_SESSION['countdown_expires'] - time());
+            if ($remaining_time > 0) {
+                echo '<p class="counter-text">Too many failed attempts. Please wait for <span id="countdown">' . $remaining_time . '</span> seconds.</p>';
+                echo '<script>';
+                echo 'document.getElementById("loginForm").style.pointerEvents = "none";';
+                echo 'document.getElementById("loginButton").disabled = true;';
+                echo '</script>';
+            } else {
+                resetFailedLoginAttempts();
+                unset($_SESSION['countdown_expires']);
+                echo '<p class="forgot-password">Forgot password? <a href="password_reset.php">Click here</a></p>';
+            }
+        } else {
+            echo '<p class="forgot-password">Forgot password? <a href="password_reset.php">Click here</a></p>';
+        }
+    ?>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            <?php
+                if (getFailedLoginAttempts() >= 3 && $remaining_time > 0) {
+                    echo 'var countdownInterval = setInterval(updateCountdown, 1000);';
+                }
+            ?>
+    
+            function updateCountdown() {
+                var countdownElement = document.getElementById("countdown");
+                var remainingTime = parseInt(countdownElement.textContent);
+                remainingTime--;
+                countdownElement.textContent = Math.max(0, remainingTime); // Ensure countdown doesn't go negative
+                if (remainingTime <= 0) {
+                    clearInterval(countdownInterval);
+                    // Reset the login form and enable signup link
+                    document.getElementById("loginForm").reset();
+                    document.getElementById("loginForm").style.pointerEvents = "auto";
+                    document.getElementById("loginButton").disabled = false;
+                    // Revert the signup link text
+                    var signupLink = document.getElementById("signupLink");
+                    if (signupLink) {
+                        signupLink.innerHTML = "Don't have an account? <a href='signup.php'>Sign up</a>";
+                    }
+                    // Refresh the page
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000); // Reload after 2 seconds
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="styles.css">
     <title>Login</title>
     <style>
         body {
@@ -89,10 +157,9 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
             overflow: hidden;
         }
 
-        /* Header styling */
         .header {
-            display: flex; /* Use flexbox */
-            align-items: center; /* Align items vertically */
+            display: flex;
+            align-items: center;
             background-color: #252D6F;
             color: #fff;
             padding: 20px;
@@ -102,23 +169,23 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
         .header .icon {
             color: #fff;
             font-size: 24px;
-            margin-right: -49px; /* Adjust negative margin */
-            position: relative; /* Set position to relative */
-            z-index: 1; /* Ensure logo is above the title */
+            margin-right: -49px;
+            position: relative;
+            z-index: 1;
         }
 
         .header .title {
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center vertically */
-            margin-left: 10px; /* Adjust the margin */
-            background-color: #9eacb4; /* Light blue background */
-            color: #FFB802; /* Orange text color */
+            justify-content: center;
+            margin-left: 10px;
+            background-color: #9eacb4;
+            color: #FFB802;
             padding: 10px;
             border-radius: 15px;
-            border: 2px solid orangered; /* Orange-red border */
+            border: 2px solid orangered;
             position: relative;
-            z-index: 0; /* Ensure title is below the logo */
+            z-index: 0;
         }
 
         .header .title h2 {
@@ -134,40 +201,40 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
 
         .header .buttons-container {
             display: flex;
-            margin-left: auto; /* Push buttons to the right */
-            padding-right: 0px; /* Add some padding on the right */
-            background-color: #e0f2f1; /* Light blue background */
+            margin-left: auto;
+            padding-right: 0px;
+            background-color: #e0f2f1;
             border-radius: 5px;
-            border: 3px solid white; /* Orange-red border */
+            border: 3px solid white;
         }
 
         .header .buttons {
             display: flex;
-            gap: 0; /* Remove the gap between buttons */
+            gap: 0;
         }
 
         .header .buttons button {
             background-color: orange;
             color: white;
             border: none;
-            border-radius: 2px; /* Rounder corners */
-            padding: 20px 20px; /* Increased padding */
+            border-radius: 2px;
+            padding: 20px 20px;
             cursor: pointer;
-            font-size: 16px; /* Increased font size */
+            font-size: 16px;
             font-weight: bold;
-            display: flex; /* Use flexbox */
-            flex-direction: column; /* Arrange icon and text vertically */
-            align-items: center; /* Center items horizontally */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .header .buttons button:last-child {
-            margin-right: 0; /* Remove margin from last button */
+            margin-right: 0;
         }
 
         .header .buttons button img {
-            width: 30px; /* Increased icon size */
+            width: 30px;
             height: auto;
-            margin-bottom: 5px; /* Add margin between icon and text */
+            margin-bottom: 5px;
         }
 
         .page-content {
@@ -199,63 +266,76 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
             border-radius: 5px;
         }
 
-        .login-button {
-            font-size: 20px;
-            background-color: #252D6F;
+        .login-tab button {
+            background-color: #4CAF50;
             color: white;
-            padding: 10px 50px;
+            border: none;
             border-radius: 5px;
+            padding: 10px 20px;
             cursor: pointer;
-            border: 3px solid orange;
+            font-size: 16px;
         }
 
-        .login-button:hover {
-            background-color: #3743ae;
+        .login-tab button:hover {
+            background-color: #45a049;
         }
 
         .forgot-password {
             margin-top: 10px;
         }
 
-        #background-video {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .counter-text {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #252D6F;
+            color: #fff;
+            position: absolute;
+            bottom: 0;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            pointer-events: none;
+        }
+
+        .footer a {
+            color: #FFB802;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="header">
+    <header class="header">
         <div class="icon">
-            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+            <i class="fas fa-user-circle"></i>
         </div>
         <div class="title">
-            <h2>Barangay Pinagbuhatan</h2>
-            <p>Community Website</p>
+            <h2>Welcome!</h2>
+            <p>Please log in to continue</p>
         </div>
         <div class="buttons-container">
             <div class="buttons">
-                <button class="home-button" onclick="goToHomePage()"><img src="images/house.png"> Home</button>
-                <button class="about-button" onclick="showAboutPage()"><img src="images/multiple-users-silhouette.png"> About</button>
-                <button class="login-button" onclick="openLoginPage()"><img src="images/enter.png"> Login</button>
+                <button type="button">
+                    <img src="help-icon.png" alt="Help Icon">
+                    Help
+                </button>
             </div>
         </div>
-    </div>
-    <video autoplay loop muted playsinline id="background-video">
-        <source src="IMAGES/BG VID.mp4" type="video/mp4">
-    </video>
+    </header>
+
     <div class="page-content">
         <div class="login-tab">
             <h2>Login</h2>
-            <form id="loginForm" action="login.php" method="post">
+            <form action="login.php" method="post">
                 <input type="text" name="inputname" placeholder="Username or Email" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <button class="login-button" type="submit" id="loginButton">Login</button>
+                <button id="loginButton" type="submit">Login</button>
             </form>
             <?php
                 if (getFailedLoginAttempts() >= 3) {
@@ -266,7 +346,6 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
                     if ($remaining_time > 0) {
                         echo '<p class="counter-text">Too many failed attempts. Please wait for <span id="countdown">' . $remaining_time . '</span> seconds.</p>';
                         echo '<script>';
-                        echo 'document.getElementById("loginForm").style.pointerEvents = "none";';
                         echo 'document.getElementById("loginButton").disabled = true;';
                         echo '</script>';
                     } else {
@@ -280,46 +359,42 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
             ?>
         </div>
     </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Your Company. All rights reserved. <a href="privacy-policy.html">Privacy Policy</a></p>
+    </div>
+
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Update countdown timer every second
-        <?php
-            if (getFailedLoginAttempts() >= 3 && $remaining_time > 0) {
-                echo 'var countdownInterval = setInterval(updateCountdown, 1000);';
+        document.addEventListener("DOMContentLoaded", function() {
+            <?php
+                if (getFailedLoginAttempts() >= 3 && $remaining_time > 0) {
+                    echo 'var countdownInterval = setInterval(updateCountdown, 1000);';
+                }
+            ?>
+    
+            function updateCountdown() {
+                var countdownElement = document.getElementById("countdown");
+                var remainingTime = parseInt(countdownElement.textContent);
+                remainingTime--;
+                countdownElement.textContent = Math.max(0, remainingTime); // Ensure countdown doesn't go negative
+                if (remainingTime <= 0) {
+                    clearInterval(countdownInterval);
+                    // Reset the login form and enable signup link
+                    document.getElementById("loginForm").reset();
+                    document.getElementById("loginForm").style.pointerEvents = "auto";
+                    document.getElementById("loginButton").disabled = false;
+                    // Revert the signup link text
+                    var signupLink = document.getElementById("signupLink");
+                    if (signupLink) {
+                        signupLink.innerHTML = "Don't have an account? <a href='signup.php'>Sign up</a>";
+                    }
+                    // Refresh the page
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000); // Reload after 2 seconds
+                }
             }
-        ?>
-
-        function updateCountdown() {
-            var countdownElement = document.getElementById("countdown");
-            var remainingTime = parseInt(countdownElement.textContent);
-            remainingTime--;
-            countdownElement.textContent = Math.max(0, remainingTime); // Ensure countdown doesn't go negative
-            if (remainingTime <= 0) {
-                clearInterval(countdownInterval);
-                // Reset the login form and enable signup link
-                document.getElementById("loginForm").reset();
-                document.getElementById("loginForm").style.pointerEvents = "auto";
-                document.getElementById("loginButton").disabled = false;
-                // Refresh the page
-                setTimeout(function() {
-                    window.location.reload();
-                }, 2000); // Reload after 2 seconds
-            }
-        }
-    });
-    </script>
-    <script>
-    function goToHomePage() {
-        window.location.href = "signup.php";
-    }
-
-    function showAboutPage() {
-        window.location.href = "about.html";
-    }
-
-    function openLoginPage() {
-        window.location.href = "login.php";
-    }
+        });
     </script>
 </body>
 </html>
