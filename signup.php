@@ -10,9 +10,9 @@ require 'PHPMailer-master/src/SMTP.php';
 session_start();
 
 // Database connection parameters
-$servername = "localhost";
-$username_db = "root";
-$password_db = "";
+$servername = "pinagbuhatancw.mysql.database.azure.com";
+$username_db = "pinagbuhatancw";
+$password_db = 'pa$$word1';
 $database = "tandaandb";
 
 // Create a connection to the database
