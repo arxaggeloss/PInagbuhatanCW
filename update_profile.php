@@ -3,7 +3,7 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $servername = "pinagbuhatancw.mysql.database.azure.com";
-$username_db = "pinagbuhatancw";
+$username_db = 'pinagbuhatancw';
 $password_db = 'pa$$word1';
 $database = "tandaandb";
 
