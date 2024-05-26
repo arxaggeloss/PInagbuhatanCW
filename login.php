@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Database connection parameters
    $servername = "pinagbuhatancw.mysql.database.azure.com";
 $username_db = "pinagbuhatancw";
-$password_db = 'pa$$word1';
+$password_db = 'Pa$$word1';
 $database = "tandaandb";
 
     // Create a connection to the database
