@@ -2,10 +2,10 @@
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Establish connection to MySQL
-    $servername = "localhost"; // Change this to your server name
-    $username = "root"; // Change this to your username
-    $password = ""; // Change this to your password
-    $dbname = "tandaandb"; // Change this to your database name
+    $servername = "pinagbuhatancw.mysql.database.azure.com";
+$username_db = "pinagbuhatancw";
+$password_db = 'pa$$word1';
+$database = "tandaandb";
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
