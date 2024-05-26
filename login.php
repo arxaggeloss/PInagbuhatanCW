@@ -20,13 +20,13 @@ $remaining_time = 0; // Initialize remaining_time variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Database connection parameters
-    $servername = "pinagbuhatancw.mysql.database.azure.com";
-    $username_db = "pinagbuhatancw";
-    $password_db = 'pa$$word1';
-    $database = "tandaandb";
+   $servername = 'pinagbuhatancw.mysql.database.azure.com';
+$username_db = 'pinagbuhatancw';
+$password_db = 'pa$$word1';
+$database = 'tandaandb';
 
     // Create a connection to the database
-    $conn = new mysqli($servername, $username_db, $password_db, $database);
+    $conn = new mysqli($servername, $db_username, $db_password, $database);
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Query the database to check if the user exists by username or email
-    $check_user_query = "SELECT * FROM user WHERE username = ? OR email = ?";
+    $check_user_query = "SELECT * FROM user WHERE inputname = ? OR email = ?";
     $stmt = $conn->prepare($check_user_query);
     $stmt->bind_param("ss", $username_or_email, $username_or_email);
     $stmt->execute();
@@ -49,9 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user_row['password'])) {
             // Login successful
             // Set a session variable to remember the user's login status
-            $_SESSION['loggedin_user_id'] = $user_row['userid'];
-            resetFailedLoginAttempts(); // Reset failed login attempts on successful login
-            header("Location: /index.html"); // Ensure correct path
+            $_SESSION['loggedin_user_id'] = $user_row['userid']; // Use your appropriate column name for user ID
+            header("Location: index.html"); // Redirect to the main page
             exit();
         } else {
             // Password is incorrect
@@ -74,268 +73,192 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
     unset($_SESSION['countdown_expires']);
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-    <form action="login.php" method="post">
-        <input type="text" name="inputname" placeholder="Username or Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
-    <?php
-        if (getFailedLoginAttempts() >= 3) {
-            if (!isset($_SESSION['countdown_expires'])) {
-                $_SESSION['countdown_expires'] = time() + 30; // 30 seconds countdown
-            }
-            $remaining_time = max(0, $_SESSION['countdown_expires'] - time());
-            if ($remaining_time > 0) {
-                echo '<p class="counter-text">Too many failed attempts. Please wait for <span id="countdown">' . $remaining_time . '</span> seconds.</p>';
-                echo '<script>';
-                echo 'document.getElementById("loginForm").style.pointerEvents = "none";';
-                echo 'document.getElementById("loginButton").disabled = true;';
-                echo '</script>';
-            } else {
-                resetFailedLoginAttempts();
-                unset($_SESSION['countdown_expires']);
-                echo '<p class="forgot-password">Forgot password? <a href="password_reset.php">Click here</a></p>';
-            }
-        } else {
-            echo '<p class="forgot-password">Forgot password? <a href="password_reset.php">Click here</a></p>';
-        }
-    ?>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            <?php
-                if (getFailedLoginAttempts() >= 3 && $remaining_time > 0) {
-                    echo 'var countdownInterval = setInterval(updateCountdown, 1000);';
-                }
-            ?>
-    
-            function updateCountdown() {
-                var countdownElement = document.getElementById("countdown");
-                var remainingTime = parseInt(countdownElement.textContent);
-                remainingTime--;
-                countdownElement.textContent = Math.max(0, remainingTime); // Ensure countdown doesn't go negative
-                if (remainingTime <= 0) {
-                    clearInterval(countdownInterval);
-                    // Reset the login form and enable signup link
-                    document.getElementById("loginForm").reset();
-                    document.getElementById("loginForm").style.pointerEvents = "auto";
-                    document.getElementById("loginButton").disabled = false;
-                    // Revert the signup link text
-                    var signupLink = document.getElementById("signupLink");
-                    if (signupLink) {
-                        signupLink.innerHTML = "Don't have an account? <a href='signup.php'>Sign up</a>";
-                    }
-                    // Refresh the page
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 2000); // Reload after 2 seconds
-                }
-            }
-        });
-    </script>
-</body>
-</html>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <title>Login</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+    }
+    
+    /* Header styling */
+    .header {
+        display: flex; /* Use flexbox */
+        align-items: center; /* Align items vertically */
+        background-color: #252D6F;
+        color: #fff;
+        padding: 20px;
+        position: relative;
+    }
 
-        .header {
-            display: flex;
-            align-items: center;
-            background-color: #252D6F;
-            color: #fff;
-            padding: 20px;
-            position: relative;
-        }
+    .header .icon {
+        color: #fff;
+        font-size: 24px;
+        margin-right: -49px; /* Adjust negative margin */
+        position: relative; /* Set position to relative */
+        z-index: 1; /* Ensure logo is above the title */
+    }
 
-        .header .icon {
-            color: #fff;
-            font-size: 24px;
-            margin-right: -49px;
-            position: relative;
-            z-index: 1;
-        }
+    .header .title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center vertically */
+        margin-left: 10px; /* Adjust the margin */
+        background-color: #9eacb4; /* Light blue background */
+        color: #FFB802; /* Orange text color */
+        padding: 10px;
+        border-radius: 15px;
+        border: 2px solid orangered; /* Orange-red border */
+        position: relative;
+        z-index: 0; /* Ensure title is below the logo */
+    }
 
-        .header .title {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-left: 10px;
-            background-color: #9eacb4;
-            color: #FFB802;
-            padding: 10px;
-            border-radius: 15px;
-            border: 2px solid orangered;
-            position: relative;
-            z-index: 0;
-        }
+    .header .title h2 {
+        margin-left: 20px;
+        font-size: 47px;
+        font-weight: bold;
+    }
 
-        .header .title h2 {
-            margin-left: 20px;
-            font-size: 47px;
-            font-weight: bold;
-        }
+    .header .title p {
+        margin-left: 20px;
+        font-size: 27px;
+    }
 
-        .header .title p {
-            margin-left: 20px;
-            font-size: 27px;
-        }
+    .header .buttons-container {
+        display: flex;
+        margin-left: auto; /* Push buttons to the right */
+        padding-right: 0px; /* Add some padding on the right */
+        background-color: #e0f2f1; /* Light blue background */
+        border-radius: 5px;
+        border: 3px solid white; /* Orange-red border */
+    }
 
-        .header .buttons-container {
-            display: flex;
-            margin-left: auto;
-            padding-right: 0px;
-            background-color: #e0f2f1;
-            border-radius: 5px;
-            border: 3px solid white;
-        }
+    .header .buttons {
+        display: flex;
+        gap: 0; /* Remove the gap between buttons */
+    }
 
-        .header .buttons {
-            display: flex;
-            gap: 0;
-        }
+    .header .buttons button {
+        background-color: orange;
+        color: white;
+        border: none;
+        border-radius: 2px; /* Rounder corners */
+        padding: 20px 20px; /* Increased padding */
+        cursor: pointer;
+        font-size: 16px; /* Increased font size */
+        font-weight: bold;
+        display: flex; /* Use flexbox */
+        flex-direction: column; /* Arrange icon and text vertically */
+        align-items: center; /* Center items horizontally */
+    }
 
-        .header .buttons button {
-            background-color: orange;
-            color: white;
-            border: none;
-            border-radius: 2px;
-            padding: 20px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .header .buttons button:last-child {
+        margin-right: 0; /* Remove margin from last button */
+    }
 
-        .header .buttons button:last-child {
-            margin-right: 0;
-        }
+    .header .buttons button img {
+        width: 30px; /* Increased icon size */
+        height: auto;
+        margin-bottom: 5px; /* Add margin between icon and text */
+    }
 
-        .header .buttons button img {
-            width: 30px;
-            height: auto;
-            margin-bottom: 5px;
-        }
+    .page-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 80px);
+    }
 
-        .page-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: calc(100vh - 80px);
-        }
+    .login-tab {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        width: 300px;
+        padding: 20px;
+        text-align: center;
+    }
 
-        .login-tab {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            padding: 20px;
-            text-align: center;
-        }
+    .login-tab h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
 
-        .login-tab h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+    .login-tab input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
 
-        .login-tab input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+    .login-button {
+        font-size: 20px;
+        background-color: #252D6F;
+        color: white;
+        padding: 10px 50px;
+        border-radius: 5px;
+        cursor: pointer;
+        border: 3px solid orange;
+    }
 
-        .login-tab button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    .login-button:hover {
+        background-color: #3743ae;
+    }
 
-        .login-tab button:hover {
-            background-color: #45a049;
-        }
+    .forgot-password {
+        margin-top: 10px;
+    }
 
-        .forgot-password {
-            margin-top: 10px;
-        }
+    #background-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        pointer-events: none;
+    }
+</style>
 
-        .counter-text {
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
 
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #252D6F;
-            color: #fff;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-        }
-
-        .footer a {
-            color: #FFB802;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
-    <header class="header">
+    <div class="header">
         <div class="icon">
-            <i class="fas fa-user-circle"></i>
+            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
         </div>
         <div class="title">
-            <h2>Welcome!</h2>
-            <p>Please log in to continue</p>
+            <h2>Barangay Pinagbuhatan</h2>
+            <p>Community Website</p>
         </div>
         <div class="buttons-container">
-            <div class="buttons">
-                <button type="button">
-                    <img src="help-icon.png" alt="Help Icon">
-                    Help
-                </button>
-            </div>
+        <div class="buttons">
+        <button class="home-button" onclick="goToHomePage()"><img src="images/house.png"> Home</button>
+            <button class="about-button" onclick="showAboutPage()"><img src="images/multiple-users-silhouette.png"> About</button>
+            <button class="login-button" onclick="openLoginPage()"><img src="images/enter.png"> Login</button>
         </div>
-    </header>
-
-    <div class="page-content">
+    </div>
+    </div>
+    <video autoplay loop muted playsinline id="background-video">
+    <source src="IMAGES/BG VID.mp4" type="video/mp4">
+</video>
+<div class="page-content">
         <div class="login-tab">
             <h2>Login</h2>
-            <form action="login.php" method="post">
+            <!-- Inside the form in your HTML -->
+            <form id="loginForm" action="login.php" method="post">
                 <input type="text" name="inputname" placeholder="Username or Email" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <button id="loginButton" type="submit">Login</button>
+                <button class="login-button" type="submit" id="loginButton">Login</button>
             </form>
             <?php
                 if (getFailedLoginAttempts() >= 3) {
@@ -346,55 +269,76 @@ if (isset($_SESSION['countdown_expires']) && time() >= $_SESSION['countdown_expi
                     if ($remaining_time > 0) {
                         echo '<p class="counter-text">Too many failed attempts. Please wait for <span id="countdown">' . $remaining_time . '</span> seconds.</p>';
                         echo '<script>';
+                        echo 'document.getElementById("loginForm").style.pointerEvents = "none";';
                         echo 'document.getElementById("loginButton").disabled = true;';
                         echo '</script>';
                     } else {
                         resetFailedLoginAttempts();
                         unset($_SESSION['countdown_expires']);
+                        // Change the text to "Forgot password? Click here"
                         echo '<p class="forgot-password">Forgot password? <a href="password_reset.php">Click here</a></p>';
                     }
                 } else {
+                    // Change the text to "Forgot password? Click here"
                     echo '<p class="forgot-password">Forgot password? <a href="password_reset.php">Click here</a></p>';
+
                 }
             ?>
         </div>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2024 Your Company. All rights reserved. <a href="privacy-policy.html">Privacy Policy</a></p>
-    </div>
-
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            <?php
-                if (getFailedLoginAttempts() >= 3 && $remaining_time > 0) {
-                    echo 'var countdownInterval = setInterval(updateCountdown, 1000);';
-                }
-            ?>
-    
-            function updateCountdown() {
-                var countdownElement = document.getElementById("countdown");
-                var remainingTime = parseInt(countdownElement.textContent);
-                remainingTime--;
-                countdownElement.textContent = Math.max(0, remainingTime); // Ensure countdown doesn't go negative
-                if (remainingTime <= 0) {
-                    clearInterval(countdownInterval);
-                    // Reset the login form and enable signup link
-                    document.getElementById("loginForm").reset();
-                    document.getElementById("loginForm").style.pointerEvents = "auto";
-                    document.getElementById("loginButton").disabled = false;
-                    // Revert the signup link text
-                    var signupLink = document.getElementById("signupLink");
-                    if (signupLink) {
-                        signupLink.innerHTML = "Don't have an account? <a href='signup.php'>Sign up</a>";
-                    }
-                    // Refresh the page
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 2000); // Reload after 2 seconds
-                }
+    document.addEventListener("DOMContentLoaded", function() {
+        // Update countdown timer every second
+        <?php
+            if (getFailedLoginAttempts() >= 3 && $remaining_time > 0) {
+                echo 'var countdownInterval = setInterval(updateCountdown, 1000);';
             }
-        });
+        ?>
+
+        function updateCountdown() {
+            var countdownElement = document.getElementById("countdown");
+            var remainingTime = parseInt(countdownElement.textContent);
+            remainingTime--;
+            countdownElement.textContent = Math.max(0, remainingTime); // Ensure countdown doesn't go negative
+            if (remainingTime <= 0) {
+                clearInterval(countdownInterval);
+                // Reset the login form and enable signup link
+                document.getElementById("loginForm").reset();
+                document.getElementById("loginForm").style.pointerEvents = "auto";
+                document.getElementById("loginButton").disabled = false;
+                // Revert the signup link text
+                var signupLink = document.getElementById("signupLink");
+                if (signupLink) {
+                    signupLink.innerHTML = "Don't have an account? <a href='signup.php'>Sign up</a>";
+                }
+                // Refresh the page
+                setTimeout(function() {
+                    window.location.reload();
+                }, 2000); // Reload after 2 seconds
+            }
+        }
+    });
+</script>
+
+
+
+       <script>
+        function goToHomePage() {
+            // Define the action for the Home button (e.g., redirect to home page)
+            window.location.href = "signup.php";
+        }
+
+        function showAboutPage() {
+            // Define the action for the About button (e.g., show about page content)
+            window.location.href = "about.html";
+        }
+
+        function openLoginPage() {
+            // Define the action for the Login button (e.g., open login form)
+            window.location.href = "login.php";
+        }
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
