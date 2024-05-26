@@ -8,7 +8,7 @@ $password_db = 'pa$$word1';
 $database = "tandaandb";
 
     // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+     $conn = new mysqli($servername, $username_db, $password_db, $database);
 
     // Check connection
     if ($conn->connect_error) {
