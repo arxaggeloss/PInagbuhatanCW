@@ -3,7 +3,7 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Establish connection to MySQL
     $servername = "pinagbuhatancw.mysql.database.azure.com";
-$username_db = "pinagbuhatancw";
+$username_db = 'pinagbuhatancw';
 $password_db = 'pa$$word1';
 $database = "tandaandb";
 
