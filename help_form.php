@@ -5,10 +5,10 @@ ini_set('display_errors', 1);
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Establish database connection (replace with your database credentials)
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "tandaandb";
+   $servername = "pinagbuhatancw.mysql.database.azure.com";
+$username_db = "pinagbuhatancw";
+$password_db = 'pa$$word1';
+$database = "tandaandb";
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
