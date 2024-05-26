@@ -9,6 +9,9 @@ require 'PHPMailer-master/src/SMTP.php';
 
 session_start();
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Database connection parameters
 $servername = "pinagbuhatancw.mysql.database.azure.com";
 $username_db = "pinagbuhatancw";
