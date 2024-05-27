@@ -8,10 +8,10 @@
 <hr style="border:1px solid; background-color:#8a7b6d; border-color:#3B3131;">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
     <a href="index.php" ><i class="fa fa-home"></i> Dashboard</a>
-    <a href="viewCustomers.php"  onclick="showCustomers()" ><i class="fa fa-users"></i> Users</a>
-    <a href="viewCategories.php"   onclick="showCategory()" ><i class="fa fa-th-large"></i> Medical Assistance</a>
-    <a href="viewSizes.php"   onclick="showSizes()" ><i class="fa fa-th"></i> Events</a>
-    <a href="viewProductSizes.php"   onclick="showProductSizes()" ><i class="fa fa-th-list"></i> Helpdesk</a>    
+    <a href="adminView/viewCustomers.php"  onclick="showCustomers()" ><i class="fa fa-users"></i> Users</a>
+    <a href="adminView/viewCategories.php"   onclick="showCategory()" ><i class="fa fa-th-large"></i> Medical Assistance</a>
+    <a href="adminView/viewSizes.php"   onclick="showSizes()" ><i class="fa fa-th"></i> Events</a>
+    <a href="adminView/viewProductSizes.php"   onclick="showProductSizes()" ><i class="fa fa-th-list"></i> Helpdesk</a>    
   
   <!---->
 </div>
