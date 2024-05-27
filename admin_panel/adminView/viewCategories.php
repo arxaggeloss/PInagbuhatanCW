@@ -11,13 +11,13 @@ require 'C:\xampp\htdocs\TANDAAN\PHPMailer-master\src\SMTP.php';
 $mail = new PHPMailer(true);
 
 // Database connection
-   $servername = "pinagbuhatancw.mysql.database.azure.com";
+$servername = "pinagbuhatancw.mysql.database.azure.com";
 $username_db = "pinagbuhatancw";
 $password_db = 'pa$$word1';
 $database = "tandaandb";
 
-// Establish connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Create a connection to the database
+$conn = new mysqli($servername, $username_db, $password_db, $database);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
