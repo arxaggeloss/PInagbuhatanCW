@@ -12,8 +12,8 @@
 <body >
     
         <?php
-            include "config/adminHeader.php";
-            include "config/sidebar.php";
+            include "adminHeader.php";
+            include "sidebar.php";
            
             include_once "config/dbconnect.php";
         ?>
