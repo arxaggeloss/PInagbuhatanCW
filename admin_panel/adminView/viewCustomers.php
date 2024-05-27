@@ -1,5 +1,5 @@
 <?php
-include_once "../config/dbconnect.php";
+include_once "config/dbconnect.php";
 
 // Delete User
 if (isset($_GET['delete_user'])) {
