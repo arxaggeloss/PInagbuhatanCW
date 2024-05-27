@@ -11,7 +11,7 @@
             </tr>
         </thead>
         <?php
-        include_once "../config/dbconnect.php";
+        include_once "config/dbconnect.php";
         $sql = "SELECT id, title, description, start_datetime, end_datetime FROM events";
         $result = $conn->query($sql);
         $count = 1;
