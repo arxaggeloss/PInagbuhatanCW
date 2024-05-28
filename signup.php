@@ -1,5 +1,6 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 require 'PHPMailer-master/src/Exception.php';
@@ -63,12 +64,12 @@ function sendOTP($email, $otp) {
 
         // Sending email
         if ($mail->send()) {
-            echo 'OTP sent successfully to ' . $email;
+            return true; // Return true if OTP sent successfully
         } else {
-            echo 'Error sending OTP: ' . $mail->ErrorInfo;
+            return false; // Return false if sending OTP failed
         }
     } catch (Exception $e) {
-        echo 'Mailer Error: ' . $mail->ErrorInfo;
+        return false; // Return false if an exception occurred
     }
 }
 
@@ -111,32 +112,16 @@ if (
             // Generate OTP
             $generatedOTP = generateOTP();
 
-            // Perform the SQL query to insert the user data into the database using prepared statements
-            $insertQuery = "INSERT INTO user (inputname, password, address, birthday, age, gender, email, otp, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($insertQuery);
-            if ($stmt) {
-                $isAdmin = 0; // Default value for regular users
-                $stmt->bind_param("ssssisssi", $input_username, $hashedPassword, $address, $birthday, $age, $gender, $email, $generatedOTP, $isAdmin);
-
-                if ($stmt->execute()) {
-                    // Registration successful
-                    sendOTP($email, $generatedOTP); // Send OTP via email
-
-                    // Set user's email in the session
-                    $_SESSION['user_email'] = $email;
-
-                    // Redirect to the OTP verification page
-                    header("Location: otp_verification.php");
-                    exit();
-                } else {
-                    echo "Error: " . $stmt->error;
-                }
+            // Send OTP via email
+            if (sendOTP($email, $generatedOTP)) {
+                // OTP sent successfully, redirect to the OTP verification page
+                $_SESSION['user_email'] = $email; // Set user's email in the session
+                header("Location: otp_verification.php");
+                exit();
             } else {
-                echo "Error in preparing statement.";
+                // Error sending OTP, handle the error or display a message
+                echo "Error sending OTP. Please try again.";
             }
-
-            // Close the prepared statement for inserting user data
-            $stmt->close();
         }
 
         // Close the prepared statement for checking email existence
@@ -147,7 +132,7 @@ if (
     $conn->close();
 }
 ?>
-
+    
 <!DOCTYPE html>
 <html lang="en">
 <head>
