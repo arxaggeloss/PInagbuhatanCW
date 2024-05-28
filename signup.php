@@ -108,9 +108,9 @@ if (
             echo "This email address is already registered. Please use a different email.";
         } else {
             // Email doesn't exist, proceed with registration
-           $stmt_insert_user = $conn->prepare("INSERT INTO user (inputname, password, email, address, birthday, age, gender) VALUES (?, ?, ?, ?, ?, ?, ?)");
+          $stmt_insert_user = $conn->prepare("INSERT INTO user (inputname, password, email, address, birthday, age, gender, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             if ($stmt_insert_user) {
-                $stmt_insert_user->bind_param("sssssis", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender);
+                $stmt_insert_user->bind_param("sssssssi", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender, $isAdmin);
                 if ($stmt_insert_user->execute()) {
                     // Registration successful, generate OTP and send it via email
                     $generatedOTP = generateOTP();
