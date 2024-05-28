@@ -22,7 +22,7 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
 
     $email = $_SESSION['user_email'];
 
-    $sql = "SELECT * FROM user WHERE email = ?";
+    $sql = "SELECT otp FROM user WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -35,15 +35,15 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
         echo "Stored OTP: " . $storedOTP . "<br>";
         echo "Entered OTP: " . $enteredOTP . "<br>";
 
-        if ($storedOTP === $enteredOTP) { // Compare stored OTP with entered OTP
-            // OTP verification successful
+        if ($enteredOTP === $storedOTP) {
+            // OTP verification successful, proceed with further actions
             echo "OTP verification successful. You can proceed with further actions.";
+            // You can redirect the user to a dashboard or another page here
+            // Example: header("Location: dashboard.php");
         } else {
-            // Invalid OTP
             echo "Invalid OTP. Please try again.";
         }
     } else {
-        // User not found
         echo "User not found.";
     }
 
