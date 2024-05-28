@@ -303,33 +303,30 @@ if (
         pointer-events: none;
     }
 </style>
-
-
 </head>
 <body>
     <div class="header">
         <div class="icon">
-            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;">
         </div>
         <div class="title">
             <h2>Barangay Pinagbuhatan</h2>
             <p>Community Website</p>
         </div>
         <div class="buttons-container">
-        <div class="buttons">
-        <button class="home-button" onclick="goToHomePage()"><img src="images/house.png"> Home</button>
-            <button class="about-button" onclick="showAboutPage()"><img src="images/multiple-users-silhouette.png"> About</button>
-            <button class="login-button" onclick="openLoginPage()"><img src="images/enter.png"> Login</button>
+            <div class="buttons">
+                <button class="home-button" onclick="goToHomePage()"><img src="images/house.png"> Home</button>
+                <button class="about-button" onclick="showAboutPage()"><img src="images/multiple-users-silhouette.png"> About</button>
+                <button class="login-button" onclick="openLoginPage()"><img src="images/enter.png"> Login</button>
+            </div>
         </div>
     </div>
-    </div>
     <video autoplay loop muted playsinline id="background-video">
-    <source src="IMAGES/BG VID.mp4" type="video/mp4">
-</video>
+        <source src="IMAGES/BG VID.mp4" type="video/mp4">
+    </video>
     <div class="page-content">
         <div class="login-tab">
             <h2>Sign Up</h2>
-            <!-- Inside the form in your HTML -->
             <form action="signup.php" method="post">
                 <input type="text" name="inputname" placeholder="Username" required>
                 <input type="text" name="email" placeholder="Email" required>
@@ -344,17 +341,14 @@ if (
     </div>
     <script>
         function goToHomePage() {
-            // Define the action for the Home button (e.g., redirect to home page)
             window.location.href = "signup.php";
         }
 
         function showAboutPage() {
-            // Define the action for the About button (e.g., show about page content)
             window.location.href = "about.html";
         }
 
         function openLoginPage() {
-            // Define the action for the Login button (e.g., open login form)
             window.location.href = "login.php";
         }
     </script>
