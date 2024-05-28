@@ -104,34 +104,38 @@ if (
             echo "This email address is already registered. Please use a different email.";
         } else {
             // Email doesn't exist, proceed with registration
+            // Password complexity validation code remains unchanged
 
             // Hash the password before storing it in the database for security
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            // Generate OTP
-            $generatedOTP = generateOTP();
+            // Default value for isAdmin (assuming it's a boolean column)
+            $is_admin_default = 0;
 
-            // Send OTP via email
-            if (sendOTP($email, $generatedOTP)) {
-                // OTP sent successfully, store user information and OTP in the database
-                $insert_user = "INSERT INTO user (inputname, password, address, birthday, age, gender, email, otp, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
-                $stmt_insert_user = $conn->prepare($insert_user);
-                $stmt_insert_user->bind_param("ssssisss", $input_username, $hashedPassword, $address, $birthday, $age, $gender, $email, $generatedOTP);
+            // Prepare INSERT statement
+            $stmt_insert_user = $conn->prepare("INSERT INTO user (username, password, email, address, birthday, age, gender, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert_user->bind_param("sssssssi", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender, $is_admin_default);
 
-                if ($stmt_insert_user->execute()) {
-                    // Redirect to the OTP verification page
+            // Execute the statement
+            if ($stmt_insert_user->execute()) {
+                // Registration successful, send OTP
+                $generatedOTP = generateOTP();
+                if (sendOTP($email, $generatedOTP)) {
+                    // OTP sent successfully, redirect to the OTP verification page
                     $_SESSION['user_email'] = $email; // Set user's email in the session
                     header("Location: otp_verification.php");
                     exit();
                 } else {
-                    echo "Error in registration. Please try again.";
+                    // Error sending OTP, handle the error or display a message
+                    echo "Error sending OTP. Please try again.";
                 }
-
-                $stmt_insert_user->close();
             } else {
-                // Error sending OTP, handle the error or display a message
-                echo "Error sending OTP. Please try again.";
+                // Registration failed, handle the error or display a message
+                echo "Registration failed. Please try again.";
             }
+
+            // Close the statement
+            $stmt_insert_user->close();
         }
 
         // Close the prepared statement for checking email existence
@@ -142,6 +146,7 @@ if (
     $conn->close();
 }
 ?>
+    
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,7 +162,7 @@ if (
         font-family: Arial, sans-serif;
         overflow: hidden;
     }
-
+    
     /* Header styling */
     .header {
         display: flex; /* Use flexbox */
@@ -249,105 +254,109 @@ if (
     .login-tab {
         background-color: #ffffff;
         border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        width: 300px;
         padding: 20px;
-        width: 500px;
+        text-align: center;
     }
 
-    .login-tab form {
-        display: flex;
-        flex-direction: column;
+    .login-tab h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
     }
 
-    .login-tab label {
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-    .login-tab input[type="text"],
-    .login-tab input[type="password"],
-    .login-tab input[type="email"],
-    .login-tab select {
+    .login-tab input {
+        width: 90%;
         padding: 10px;
-        margin-bottom: 15px;
+        margin: 10px 0;
         border: 1px solid #ccc;
         border-radius: 5px;
     }
 
-    .login-tab button {
-        padding: 10px;
-        background-color: orange;
+    .login-button {
+        font-size: 20px;
+        background-color: #252D6F;
         color: white;
-        border: none;
+        padding: 10px 50px;
         border-radius: 5px;
         cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        margin-top: 10px;
+        border: 3px solid orange;
     }
 
-    .login-tab button:hover {
-        background-color: #e68a00;
+    .login-button:hover {
+        background-color: #3743ae;
     }
-    </style>
+
+    .signup-link {
+        margin-top: 20px;
+    }
+
+    #background-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        pointer-events: none;
+    }
+</style>
+
+
 </head>
 <body>
     <div class="header">
-        <i class="fas fa-duotone fa-toilet icon"></i>
+        <div class="icon">
+            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+        </div>
         <div class="title">
-            <h2>Sta Ana Tandaan</h2>
-            <p>Let us keep our toilets clean</p>
+            <h2>Barangay Pinagbuhatan</h2>
+            <p>Community Website</p>
         </div>
         <div class="buttons-container">
-            <div class="buttons">
-                <button onclick="window.location.href='home.html'">
-                    <img src="IMAGES/home.png" alt="Home Icon">
-                    Home
-                </button>
-                <button onclick="window.location.href='services.html'">
-                    <img src="IMAGES/services.png" alt="Services Icon">
-                    Services
-                </button>
-                <button onclick="window.location.href='contact.html'">
-                    <img src="IMAGES/contact.png" alt="Contact Icon">
-                    Contact
-                </button>
-            </div>
+        <div class="buttons">
+        <button class="home-button" onclick="goToHomePage()"><img src="images/house.png"> Home</button>
+            <button class="about-button" onclick="showAboutPage()"><img src="images/multiple-users-silhouette.png"> About</button>
+            <button class="login-button" onclick="openLoginPage()"><img src="images/enter.png"> Login</button>
         </div>
     </div>
-
+    </div>
+    <video autoplay loop muted playsinline id="background-video">
+    <source src="IMAGES/BG VID.mp4" type="video/mp4">
+</video>
     <div class="page-content">
         <div class="login-tab">
             <h2>Sign Up</h2>
+            <!-- Inside the form in your HTML -->
             <form action="signup.php" method="post">
-                <label for="inputname">Name:</label>
-                <input type="text" id="inputname" name="inputname" required>
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address" required>
-
-                <label for="birthday">Birthday:</label>
-                <input type="text" id="birthday" name="birthday" required>
-
-                <label for="age">Age:</label>
-                <input type="text" id="age" name="age" required>
-
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-                <button type="submit">Sign Up</button>
+                <input type="text" name="inputname" placeholder="Username" required>
+                <input type="text" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="text" name="address" placeholder="Address" required>
+                <input type="date" name="birthday" placeholder="Birthday" required>
+                <input type="text" name="age" placeholder="Age" required>
+                <input type="text" name="gender" placeholder="Gender" required>
+                <button class="login-button" type="submit">SIGN IN</button>
             </form>
         </div>
     </div>
+    <script>
+        function goToHomePage() {
+            // Define the action for the Home button (e.g., redirect to home page)
+            window.location.href = "signup.php";
+        }
+
+        function showAboutPage() {
+            // Define the action for the About button (e.g., show about page content)
+            window.location.href = "about.html";
+        }
+
+        function openLoginPage() {
+            // Define the action for the Login button (e.g., open login form)
+            window.location.href = "login.php";
+        }
+    </script>
+    <script src="script.js"></script>
 </body>
 </html>
