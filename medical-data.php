@@ -2,10 +2,10 @@
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Establish connection to MySQL
-    $servername = "pinagbuhatancw.mysql.database.azure.com";
+    $servername = 'pinagbuhatancw.mysql.database.azure.com';
 $username_db = 'pinagbuhatancw';
 $password_db = 'pa$$word1';
-$database = "tandaandb";
+$database = 'tandaandb';
 
     // Create connection
      $conn = new mysqli($servername, $username_db, $password_db, $database);
