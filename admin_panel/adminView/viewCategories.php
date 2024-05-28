@@ -11,13 +11,13 @@ require 'C:\xampp\htdocs\TANDAAN\PHPMailer-master\src\SMTP.php';
 $mail = new PHPMailer(true);
 
 // Database connection
-$servername = 'pinagbuhatancw.mysql.database.azure.com';
-$username_db = 'pinagbuhatancw';
-$password_db = 'pa$$word1';
-$database = 'tandaandb';
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "tandaandb";
 
-    // Create a connection to the database
-    $conn = new mysqli($servername, $username_db, $password_db, $database);
+// Establish connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -75,6 +75,16 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
     }
 }
 
+// Function to log actions
+function logAction($userId, $action) {
+    global $conn;
+
+    $logSql = "INSERT INTO logs (user_id, action) VALUES (?, ?)";
+    $stmt = $conn->prepare($logSql);
+    $stmt->bind_param("is", $userId, $action);
+    $stmt->execute();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['change_status'])) {
         $medical_assistance_id = $_POST['medical_assistance_id'];
@@ -85,6 +95,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $conn->prepare($updateSql);
         $stmt->bind_param("si", $new_status, $medical_assistance_id);
         $stmt->execute();
+
+        // Log the action
+        $userId = 1; // Replace with the actual user ID
+        $action = "Changed status of medical assistance ID $medical_assistance_id to $new_status";
+        logAction($userId, $action);
 
         // Fetch relevant data for sending email notification
         $fetchSql = "SELECT email, medical_condition FROM medical_assistance WHERE medical_assistance_id=?";
@@ -119,6 +134,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("si", $new_not_finished, $medical_assistance_id);
         $stmt->execute();
 
+        // Log the action
+        $userId = 1; // Replace with the actual user ID
+        $action = "Changed not_finished status of medical assistance ID $medical_assistance_id to $new_not_finished";
+        logAction($userId, $action);
+
         // Fetch relevant data for sending email notification
         $fetchSql = "SELECT email FROM medical_assistance WHERE medical_assistance_id=?";
         $fetchStmt = $conn->prepare($fetchSql);
@@ -138,6 +158,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Send email and insert notification using the updated function
             sendEmailAndNotification($to, $subject, $message, $notificationText);
         }
+    }
+
+    if (isset($_POST['send_reply'])) {
+        $medical_assistance_id = $_POST['medical_assistance_id'];
+        $email = $_POST['email'];
+        $message = $_POST['message'];
+
+        // Send email
+        $subject = "Reply to Your Medical Assistance Request";
+        $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
+
+        sendEmailAndNotification($email, $subject, $message, $notificationText);
     }
 }
 ?>
@@ -163,6 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <th class="text-center">Submission Date</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Not Finished</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <?php
@@ -187,12 +220,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <?= ($row['not_finished'] == 'not finished') ? 'Not Finished' : 'Finished' ?>
                             </button>
                         </td>
+                        <td>
+                            <button class="reply" data-id="<?= $row['medical_assistance_id'] ?>" data-email="<?= $row['email'] ?>">Reply</button>
+                        </td>
                     </tr>
             <?php
                 }
             }
             ?>
         </table>
+
+        <!-- Reply Form (hidden by default) -->
+        <div id="reply-form" style="display: none;">
+            <h3>Reply to Medical Assistance Request</h3>
+            <form id="reply-form-inner">
+                <input type="hidden" id="reply-medical-assistance-id" name="medical_assistance_id">
+                <input type="hidden" id="reply-email" name="email">
+                <div>
+                    <label for="reply-message">Message:</label>
+                    <textarea id="reply-message" name="message" rows="4" cols="50"></textarea>
+                </div>
+                <button type="submit">Send Reply</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -250,6 +300,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         console.error(error);
                         // Display an error message to the user
                         alert('An error occurred while updating the status. Please try again.');
+                    }
+                });
+            });
+
+            $('.reply').click(function () {
+                var medicalAssistanceId = $(this).data('id');
+                var email = $(this).data('email');
+
+                // Show the reply form and populate it with the relevant data
+                $('#reply-medical-assistance-id').val(medicalAssistanceId);
+                $('#reply-email').val(email);
+                $('#reply-form').show();
+            });
+
+            $('#reply-form-inner').submit(function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo $_SERVER['PHP_SELF']; ?>",
+                    data: formData + '&send_reply=true',
+                    success: function (response) {
+                        // Hide the reply form
+                        $('#reply-form').hide();
+                        // Display a success message to the user
+                        alert('Reply sent successfully.');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        // Display an error message to the user
+                        alert('An error occurred while sending the reply. Please try again.');
                     }
                 });
             });
