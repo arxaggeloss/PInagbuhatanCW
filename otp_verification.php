@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_email'])) {
 if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']) && isset($_POST['digit4']) && isset($_POST['digit5']) && isset($_POST['digit6'])) {
     $enteredOTP = $_POST['digit1'] . $_POST['digit2'] . $_POST['digit3'] . $_POST['digit4'] . $_POST['digit5'] . $_POST['digit6'];
 
-    // Retrieve user details from the database and check OTP
+    // Retrieve user details from the database using the stored email in the session
     $servername = 'pinagbuhatancw.mysql.database.azure.com';
     $username_db = 'pinagbuhatancw';
     $password_db = 'pa$$word1';
@@ -22,18 +22,21 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
 
     $email = $_SESSION['user_email'];
 
-    $sql = "SELECT * FROM user WHERE email = '$email'";
-    echo "SQL: " . $sql; // Debugging: Output SQL query to check if it's correct
-    $result = $conn->query($sql);
+    $sql = "SELECT * FROM user WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $storedOTP = $row['otp'];
 
         if ($enteredOTP === $storedOTP) {
-            // OTP verification successful, redirect to login page
-            header("Location: login.php");
-            exit();
+            // OTP verification successful, proceed with further actions
+            // For example, set session variables, redirect to a dashboard, etc.
+            // For now, let's just echo a success message
+            echo "OTP verification successful. You can proceed with further actions.";
         } else {
             echo "Invalid OTP. Please try again.";
         }
@@ -41,10 +44,10 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
         echo "User not found.";
     }
 
+    $stmt->close();
     $conn->close();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
