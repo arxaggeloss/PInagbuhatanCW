@@ -1,5 +1,5 @@
 <?php
-include_once "../config/dbconnect.php";
+include_once "config/dbconnect.php";
 
 // Function to log actions
 function logAction($conn, $userId, $action) {
