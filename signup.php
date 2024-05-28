@@ -13,10 +13,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Database connection parameters
-$servername = "pinagbuhatancw.mysql.database.azure.com";
-$username_db = "pinagbuhatancw";
+$servername = 'pinagbuhatancw.mysql.database.azure.com';
+$username_db = 'pinagbuhatancw';
 $password_db = 'pa$$word1';
-$database = "tandaandb";
+$database = 'tandaandb';
 
 // Create a connection to the database
 $conn = new mysqli($servername, $username_db, $password_db, $database);
@@ -113,10 +113,11 @@ if (
             $generatedOTP = generateOTP();
 
             // Perform the SQL query to insert the user data into the database using prepared statements
-            $insertQuery = "INSERT INTO user (inputname, password, address, birthday, age, gender, email, otp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO user (inputname, password, address, birthday, age, gender, email, otp, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($insertQuery);
             if ($stmt) {
-                $stmt->bind_param("ssssisss", $input_username, $hashedPassword, $address, $birthday, $age, $gender, $email, $generatedOTP);
+                $isAdmin = 0; // Default value for regular users
+                $stmt->bind_param("ssssisssi", $input_username, $hashedPassword, $address, $birthday, $age, $gender, $email, $generatedOTP, $isAdmin);
 
                 if ($stmt->execute()) {
                     // Registration successful
