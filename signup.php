@@ -108,7 +108,7 @@ if (
             echo "This email address is already registered. Please use a different email.";
         } else {
             // Email doesn't exist, proceed with registration
-            $stmt_insert_user = $conn->prepare("INSERT INTO user (username, password, email, address, birthday, age, gender) VALUES (?, ?, ?, ?, ?, ?, ?)");
+           $stmt_insert_user = $conn->prepare("INSERT INTO user (inputname, password, email, address, birthday, age, gender) VALUES (?, ?, ?, ?, ?, ?, ?)");
             if ($stmt_insert_user) {
                 $stmt_insert_user->bind_param("sssssis", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender);
                 if ($stmt_insert_user->execute()) {
