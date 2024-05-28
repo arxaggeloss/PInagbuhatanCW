@@ -113,7 +113,7 @@ if (
             $is_admin_default = 0;
 
             // Prepare INSERT statement
-            $stmt_insert_user = $conn->prepare("INSERT INTO user (username, password, email, address, birthday, age, gender, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert_user = $conn->prepare("INSERT INTO user (inputname, password, email, address, birthday, age, gender, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt_insert_user->bind_param("sssssssi", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender, $is_admin_default);
 
             // Execute the statement
