@@ -23,6 +23,7 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
     $email = $_SESSION['user_email'];
 
     $sql = "SELECT * FROM user WHERE email = '$email'";
+    echo "SQL: " . $sql; // Debugging: Output SQL query to check if it's correct
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows > 0) {
@@ -43,6 +44,7 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
     $conn->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
