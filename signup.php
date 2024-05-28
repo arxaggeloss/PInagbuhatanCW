@@ -4,8 +4,9 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Include PHPMailer autoloader
-require 'PHPMailer-master/PHPMailerAutoload.php';
+require 'PHPMailer-master\src\Exception.php';
+require 'PHPMailer-master\src\PHPMailer.php';
+require 'PHPMailer-master\src\SMTP.php';
 
 // Function to generate OTP
 function generateOTP($length = 6) {
