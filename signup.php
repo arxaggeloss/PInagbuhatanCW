@@ -112,14 +112,16 @@ if (
             // Default value for isAdmin (assuming it's a boolean column)
             $is_admin_default = 0;
 
+            // Generate OTP
+            $generatedOTP = generateOTP();
+
             // Prepare INSERT statement
-            $stmt_insert_user = $conn->prepare("INSERT INTO user (inputname, password, email, address, birthday, age, gender, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt_insert_user->bind_param("sssssssi", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender, $is_admin_default);
+            $stmt_insert_user = $conn->prepare("INSERT INTO user (inputname, password, email, address, birthday, age, gender, isAdmin, otp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert_user->bind_param("sssssssis", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender, $is_admin_default, $generatedOTP);
 
             // Execute the statement
             if ($stmt_insert_user->execute()) {
                 // Registration successful, send OTP
-                $generatedOTP = generateOTP();
                 if (sendOTP($email, $generatedOTP)) {
                     // OTP sent successfully, redirect to the OTP verification page
                     $_SESSION['user_email'] = $email; // Set user's email in the session
