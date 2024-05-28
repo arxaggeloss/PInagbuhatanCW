@@ -32,15 +32,18 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
         $row = $result->fetch_assoc();
         $storedOTP = $row['otp'];
 
-        if ($enteredOTP === $storedOTP) {
-            // OTP verification successful, proceed with further actions
-            // For example, set session variables, redirect to a dashboard, etc.
-            // For now, let's just echo a success message
+        echo "Stored OTP: " . $storedOTP . "<br>";
+        echo "Entered OTP: " . $enteredOTP . "<br>";
+
+        if ($storedOTP === $enteredOTP) { // Compare stored OTP with entered OTP
+            // OTP verification successful
             echo "OTP verification successful. You can proceed with further actions.";
         } else {
+            // Invalid OTP
             echo "Invalid OTP. Please try again.";
         }
     } else {
+        // User not found
         echo "User not found.";
     }
 
