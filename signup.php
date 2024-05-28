@@ -1,12 +1,4 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
-require 'PHPMailer-master/src/Exception.php';
-require 'PHPMailer-master/src/PHPMailer.php';
-require 'PHPMailer-master/src/SMTP.php';
-
 session_start();
 
 error_reporting(E_ALL);
@@ -41,6 +33,10 @@ function generateOTP($length = 6) {
 
 // Function to send OTP via email using PHPMailer
 function sendOTP($email, $otp) {
+    require 'PHPMailer-master/src/Exception.php';
+    require 'PHPMailer-master/src/PHPMailer.php';
+    require 'PHPMailer-master/src/SMTP.php';
+
     $mail = new PHPMailer(true); // Enable exceptions
 
     try {
@@ -48,13 +44,13 @@ function sendOTP($email, $otp) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com'; // Your SMTP server
         $mail->SMTPAuth = true;
-        $mail->Username = 'staanatandaan@gmail.com'; // Your SMTP username (sender email)
-        $mail->Password = 'nycgsvxjrhrndoab'; // Your SMTP password
+        $mail->Username = 'your_email@gmail.com'; // Your SMTP username (sender email)
+        $mail->Password = 'your_password'; // Your SMTP password
         $mail->Port = 587; // Adjust the SMTP port if needed
         $mail->SMTPSecure = 'tls'; // Enable TLS encryption, 'ssl' is also possible
 
         // Sender and recipient details
-        $mail->setFrom('staanatandaan@gmail.com', 'Sta Ana Love Ko'); // Replace with sender's email and name
+        $mail->setFrom('your_email@gmail.com', 'Your Name'); // Replace with sender's email and name
         $mail->addAddress($email); // Use the provided user's email
 
         // Email content
@@ -91,9 +87,17 @@ if (
     $gender = $_POST['gender'];
     $email = $_POST['email'];
 
+    // Validate email address
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid email address.";
+        exit();
+    }
+
+    // Hash the password
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
     // Check if the email already exists in the database
-    $check_existing_email = "SELECT * FROM user WHERE email = ?";
-    $stmt_check_email = $conn->prepare($check_existing_email);
+    $stmt_check_email = $conn->prepare("SELECT * FROM user WHERE email = ?");
     if ($stmt_check_email) {
         $stmt_check_email->bind_param("s", $email);
         $stmt_check_email->execute();
@@ -104,34 +108,42 @@ if (
             echo "This email address is already registered. Please use a different email.";
         } else {
             // Email doesn't exist, proceed with registration
-            // Password complexity validation code remains unchanged
-
-            // Hash the password before storing it in the database for security
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            // Generate OTP
-            $generatedOTP = generateOTP();
-
-            // Send OTP via email
-            if (sendOTP($email, $generatedOTP)) {
-                // OTP sent successfully, redirect to the OTP verification page
-                $_SESSION['user_email'] = $email; // Set user's email in the session
-                header("Location: otp_verification.php");
-                exit();
+            $stmt_insert_user = $conn->prepare("INSERT INTO user (username, password, email, address, birthday, age, gender) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            if ($stmt_insert_user) {
+                $stmt_insert_user->bind_param("sssssis", $input_username, $hashedPassword, $email, $address, $birthday, $age, $gender);
+                if ($stmt_insert_user->execute()) {
+                    // Registration successful, generate OTP and send it via email
+                    $generatedOTP = generateOTP();
+                    if (sendOTP($email, $generatedOTP)) {
+                        // OTP sent successfully, store email in session and redirect to OTP verification page
+                        $_SESSION['user_email'] = $email;
+                        header("Location: otp_verification.php");
+                        exit();
+                    } else {
+                        // Error sending OTP
+                        echo "Error sending OTP. Please try again.";
+                    }
+                } else {
+                    // Error executing insert query
+                    echo "Error registering user. Please try again.";
+                }
             } else {
-                // Error sending OTP, handle the error or display a message
-                echo "Error sending OTP. Please try again.";
+                // Error preparing insert query
+                echo "Error registering user. Please try again.";
             }
         }
-
-        // Close the prepared statement for checking email existence
-        $stmt_check_email->close();
+        $stmt_insert_user->close();
+    } else {
+        // Error preparing select query for checking email existence
+        echo "Error registering user. Please try again.";
     }
-
-    // Close the database connection
-    $conn->close();
+    $stmt_check_email->close();
 }
+
+// Close the database connection
+$conn->close();
 ?>
+
     
 <!DOCTYPE html>
 <html lang="en">
