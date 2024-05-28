@@ -34,7 +34,7 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
 
         if ($enteredOTP === $storedOTP) {
             // OTP verification successful, proceed to index.html
-            header("Location: index.html");
+            header("Location: login.php");
             exit();
         } else {
             echo "Invalid OTP. Please try again.";
