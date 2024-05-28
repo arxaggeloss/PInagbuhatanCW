@@ -1,12 +1,30 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer-master/src/Exception.php';
+require 'PHPMailer-master/src/PHPMailer.php';
+require 'PHPMailer-master/src/SMTP.php';
+
 session_start();
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require 'PHPMailer-master/src/Exception.php';
-require 'PHPMailer-master/src/PHPMailer.php';
-require 'PHPMailer-master/src/SMTP.php';
+// Database connection parameters
+$servername = 'pinagbuhatancw.mysql.database.azure.com';
+$username_db = 'pinagbuhatancw';
+$password_db = 'pa$$word1';
+$database = 'tandaandb';
+
+// Create a connection to the database
+$conn = new mysqli($servername, $username_db, $password_db, $database);
+
+// Check for a successful connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 // Function to generate OTP
 function generateOTP($length = 6) {
@@ -23,7 +41,6 @@ function generateOTP($length = 6) {
 
 // Function to send OTP via email using PHPMailer
 function sendOTP($email, $otp) {
-    // Instantiate PHPMailer
     $mail = new PHPMailer(true); // Enable exceptions
 
     try {
@@ -47,12 +64,12 @@ function sendOTP($email, $otp) {
 
         // Sending email
         if ($mail->send()) {
-            return true;
+            return true; // Return true if OTP sent successfully
         } else {
-            return false;
+            return false; // Return false if sending OTP failed
         }
     } catch (Exception $e) {
-        return false;
+        return false; // Return false if an exception occurred
     }
 }
 
@@ -66,20 +83,6 @@ if (
     isset($_POST['gender']) &&
     isset($_POST['email'])
 ) {
-    // Database connection parameters
-    $servername = 'pinagbuhatancw.mysql.database.azure.com';
-    $username_db = 'pinagbuhatancw';
-    $password_db = 'pa$$word1';
-    $database = 'tandaandb';
-
-    // Create a connection to the database
-    $conn = new mysqli($servername, $username_db, $password_db, $database);
-
-    // Check for a successful connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
     $input_username = $_POST['inputname'];
     $password = $_POST['password'];
     $address = $_POST['address'];
@@ -109,35 +112,16 @@ if (
             // Generate OTP
             $generatedOTP = generateOTP();
 
-            // Perform the SQL query to insert the user data into the database using prepared statements
-            $insertQuery = "INSERT INTO user (inputname, password, address, birthday, age, gender, email, otp, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($insertQuery);
-            if ($stmt) {
-                $isAdmin = 0; // Default value for regular users
-                $stmt->bind_param("ssssisssi", $input_username, $hashedPassword, $address, $birthday, $age, $gender, $email, $generatedOTP, $isAdmin);
-
-                if ($stmt->execute()) {
-                    // Registration successful
-                    if (sendOTP($email, $generatedOTP)) {
-                        // OTP sent successfully
-                        // Set user's email in the session
-                        $_SESSION['user_email'] = $email;
-
-                        // Redirect to the OTP verification page
-                        header("Location: otp_verification.php");
-                        exit();
-                    } else {
-                        echo "Error sending OTP. Please try again.";
-                    }
-                } else {
-                    echo "Error: " . $stmt->error;
-                }
+            // Send OTP via email
+            if (sendOTP($email, $generatedOTP)) {
+                // OTP sent successfully, redirect to the OTP verification page
+                $_SESSION['user_email'] = $email; // Set user's email in the session
+                header("Location: otp_verification.php");
+                exit();
             } else {
-                echo "Error in preparing statement.";
+                // Error sending OTP, handle the error or display a message
+                echo "Error sending OTP. Please try again.";
             }
-
-            // Close the prepared statement for inserting user data
-            $stmt->close();
         }
 
         // Close the prepared statement for checking email existence
