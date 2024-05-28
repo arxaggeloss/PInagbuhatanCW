@@ -32,14 +32,10 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
         $row = $result->fetch_assoc();
         $storedOTP = $row['otp'];
 
-        echo "Stored OTP: " . $storedOTP . "<br>";
-        echo "Entered OTP: " . $enteredOTP . "<br>";
-
         if ($enteredOTP === $storedOTP) {
-            // OTP verification successful, proceed with further actions
-            echo "OTP verification successful. You can proceed with further actions.";
-            // You can redirect the user to a dashboard or another page here
-            // Example: header("Location: dashboard.php");
+            // OTP verification successful, proceed to index.html
+            header("Location: index.html");
+            exit();
         } else {
             echo "Invalid OTP. Please try again.";
         }
@@ -137,7 +133,7 @@ if (isset($_POST['digit1']) && isset($_POST['digit2']) && isset($_POST['digit3']
     <form action="otp_verification.php" method="post">
         <h2>Enter OTP</h2>
         <div class="otp-container">
-            <img class="otp-icon" src="IMAGES\icons8-face-id.gif" alt="OTP Icon">
+            <img class="otp-icon" src="IMAGES/icons8-face-id.gif" alt="OTP Icon">
             <div class="otp-input">
                 <input type="text" name="digit1" maxlength="1" oninput="moveToNextOrPrev(this, 'digit2', 'digit1')" required>
                 <input type="text" name="digit2" maxlength="1" oninput="moveToNextOrPrev(this, 'digit3', 'digit1')" required>
