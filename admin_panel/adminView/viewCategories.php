@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         // Log the action
-        $userId = 1; // Replace with the actual user ID
+        $userId = 17; // Replace with the actual user ID
         $action = "Changed status of medical assistance ID $medical_assistance_id to $new_status";
         logAction($userId, $action);
 
@@ -134,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         // Log the action
-        $userId = 1; // Replace with the actual user ID
+        $userId = 17; // Replace with the actual user ID
         $action = "Changed not_finished status of medical assistance ID $medical_assistance_id to $new_not_finished";
         logAction($userId, $action);
 
