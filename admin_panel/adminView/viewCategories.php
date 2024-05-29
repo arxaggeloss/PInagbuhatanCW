@@ -1,4 +1,5 @@
 <?php
+include_once "../config/dbconnect.php";
 // Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
