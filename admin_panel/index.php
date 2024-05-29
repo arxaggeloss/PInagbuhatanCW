@@ -12,10 +12,10 @@
 <body >
     
         <?php
-            include "./adminHeader.php";
-            include "./sidebar.php";
+            include "adminHeader.php";
+            include "sidebar.php";
            
-            include_once "./config/dbconnect.php";
+            include_once "config/dbconnect.php";
         ?>
 
     <div id="main-content" class="container allContent-section py-4">
