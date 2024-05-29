@@ -22,6 +22,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch data from the database
+$sql = "SELECT medical_assistance_id, patient_name, email, medical_condition, created_at, status, not_finished FROM medical_assistance";
+$result = $conn->query($sql);
+
 // Function to send emails and insert notifications using PHPMailer
 function sendEmailAndNotification($to, $subject, $message, $notificationText) {
     global $mail, $conn;
@@ -96,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         // Log the action
-        $userId = 17; // Replace with the actual user ID
+        $userId = 1; // Replace with the actual user ID
         $action = "Changed status of medical assistance ID $medical_assistance_id to $new_status";
         logAction($userId, $action);
 
@@ -134,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         // Log the action
-        $userId = 17; // Replace with the actual user ID
+        $userId = 1; // Replace with the actual user ID
         $action = "Changed not_finished status of medical assistance ID $medical_assistance_id to $new_not_finished";
         logAction($userId, $action);
 
@@ -197,12 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
-            <?php
-            $sql = "SELECT medical_assistance_id, patient_name, email, medical_condition, created_at, status, not_finished FROM medical_assistance";
-            $result = $conn->query($sql);
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-            ?>
+         
                     <tr>
                         <td><?= $row["medical_assistance_id"] ?></td>
                         <td><?= $row["patient_name"] ?></td>
