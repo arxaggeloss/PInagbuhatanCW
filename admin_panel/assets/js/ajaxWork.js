@@ -12,7 +12,7 @@ function showProductItems(){
 }
 function showCategory(){  
     $.ajax({
-        url:"./adminView/viewCategories.php",
+        url:"adminView/viewCategories.php",
         method:"post",
         data:{record:1},
         success:function(data){
@@ -32,7 +32,7 @@ function showSizes(){
 }
 function showProductSizes(){  
     $.ajax({
-        url:"./adminView/viewProductSizes.php",
+        url:"adminView/viewProductSizes.php",
         method:"post",
         data:{record:1},
         success:function(data){
