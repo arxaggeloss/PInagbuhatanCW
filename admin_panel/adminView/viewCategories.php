@@ -5,9 +5,9 @@ ini_set('display_errors', 1);
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require './PHPMailer-master/src/Exception.php';
-require './PHPMailer-master/src/PHPMailer.php';
-require './PHPMailer-master/src/SMTP.php';
+require __DIR__ . '/PHPMailer-master/src/Exception.php';
+require __DIR__ . '/PHPMailer-master/src/PHPMailer.php';
+require __DIR__ . '/PHPMailer-master/src/SMTP.php';
 
 // Initialize PHPMailer
 $mail = new PHPMailer(true);
