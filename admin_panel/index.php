@@ -5,6 +5,9 @@ session_start();
 $adminUsername = 'pinagbuhatancwadmin01';
 $adminPassword = 'pa$$word1';
 
+// Set session cookie parameters to expire when the browser/tab is closed
+session_set_cookie_params(0);
+
 // Handle login form submission
 if (isset($_POST['login'])) {
     $username = $_POST['username'];
@@ -26,13 +29,24 @@ if (isset($_POST['login'])) {
     }
 }
 
+// Handle logout request
+if (isset($_POST['logout'])) {
+    session_unset();
+    session_destroy();
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
 // Check lockout time
 if (isset($_SESSION['lockout_time']) && time() < $_SESSION['lockout_time']) {
     $lockout_message = "Too many failed login attempts. Please try again after " . ($_SESSION['lockout_time'] - time()) . " seconds.";
 }
 
-// Redirect to login form if not logged in
-if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+// Check if the user is logged in
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+    // User is logged in, do nothing
+} else {
+    // Redirect to login form if not logged in
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -189,5 +203,16 @@ if (isset($_GET['variation']) && $_GET['variation'] == "success") {
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+
+<script>
+// Script to clear session on tab close
+window.addEventListener('unload', function() {
+    navigator.sendBeacon('', JSON.stringify({logout: true}));
+});
+</script>
+
+<form id="logout-form" method="POST" style="display: none;">
+    <input type="hidden" name="logout" value="1">
+</form>
 </body>
 </html>
