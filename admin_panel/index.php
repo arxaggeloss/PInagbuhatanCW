@@ -5,6 +5,9 @@ session_start();
 $adminUsername = 'pinagbuhatancwadmin01';
 $adminPassword = 'pa$$word1';
 
+// Define the session timeout period (1 hour = 3600 seconds)
+$sessionTimeout = 3600;
+
 // Handle login form submission
 if (isset($_POST['login'])) {
     $username = $_POST['username'];
@@ -12,6 +15,7 @@ if (isset($_POST['login'])) {
 
     if ($username == $adminUsername && $password == $adminPassword) {
         $_SESSION['logged_in'] = true;
+        $_SESSION['login_time'] = time(); // Record the current time
         $_SESSION['attempt'] = 0; // Reset attempt count on successful login
     } else {
         if (!isset($_SESSION['attempt'])) {
@@ -31,8 +35,20 @@ if (isset($_SESSION['lockout_time']) && time() < $_SESSION['lockout_time']) {
     $lockout_message = "Too many failed login attempts. Please try again after " . ($_SESSION['lockout_time'] - time()) . " seconds.";
 }
 
-// Redirect to login form if not logged in
-if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+// Check if the user is logged in and if the session has timed out
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+    if (time() - $_SESSION['login_time'] > $sessionTimeout) {
+        // Session has timed out
+        session_unset();
+        session_destroy();
+        header("Location: admin.php"); // Redirect to the login page
+        exit();
+    } else {
+        // Update the login time to extend the session
+        $_SESSION['login_time'] = time();
+    }
+} else {
+    // Redirect to login form if not logged in
     ?>
     <!DOCTYPE html>
     <html lang="en">
