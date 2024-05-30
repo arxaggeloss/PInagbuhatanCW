@@ -38,7 +38,7 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
         $mail->Port = 587;
         $mail->SMTPSecure = 'tls';
 
-        $mail->setFrom('staanatandaan@gmail.com', 'Sta Ana Love');
+        $mail->setFrom('staanatandaan@gmail.com', 'PinagbuhatanCW');
         $mail->addAddress($to);
 
         $mail->isHTML(true);
@@ -49,7 +49,7 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
         $recipientMessage .= "<p>We acknowledge the importance of your query and assure you that our team is diligently working to address it. You will receive further updates and assistance shortly.</p>";
         $recipientMessage .= "<p>Thank you for choosing our service.</p>";
         $recipientMessage .= "<p>Best regards,</p>";
-        $recipientMessage .= "<p>Sta Ana Love Team</p>";
+        $recipientMessage .= "<p>PinagbuhatanCW Team</p>";
 
         $fullMessage = $message . $recipientMessage;
         $mail->Body = $fullMessage;
@@ -141,16 +141,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if (isset($_POST['send_reply'])) {
-        $help_desk_id = $_POST['help_desk_id'];
-        $email = $_POST['email'];
-        $replyMessage = $_POST['message'];
+   if (isset($_POST['send_reply'])) {
+    $medical_assistance_id = $_POST['medical_assistance_id'];
+    $email = $_POST['email'];
 
-        $subject = "Reply to Your Helpdesk Request";
-        $notificationText = "You have received a reply to your helpdesk request with ID: $help_desk_id.";
+    // Fetch relevant data for sending email notification
+    $fetchSql = "SELECT medical_assistance_id, patient_name, email, medical_condition, created_at FROM medical_assistance WHERE medical_assistance_id=?";
+    $fetchStmt = $conn->prepare($fetchSql);
+    $fetchStmt->bind_param("i", $medical_assistance_id);
+    $fetchStmt->execute();
+    $result = $fetchStmt->get_result();
+    $row = $result->fetch_assoc();
 
-        sendEmailAndNotification($email, $subject, $replyMessage, $notificationText);
-    }
+    // Construct the email content
+    $subject = "Reply to Your Medical Assistance Request";
+    $message = "ID: " . $row['medical_assistance_id'] . "<br>";
+    $message .= "Patient Name: " . $row['patient_name'] . "<br>";
+    $message .= "Email: " . $row['email'] . "<br>";
+    $message .= "Medical Condition: " . $row['medical_condition'] . "<br>";
+    $message .= "Submission Date: " . $row['created_at'] . "<br><br>";
+    $message .= "Your message:<br>"; // Add bullet point for the message
+    $message .= "<ul><li>" . nl2br($_POST['message']) . "</li></ul>"; // Add the message from the admin reply
+
+    // Define the notification text
+    $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
+
+    // Send email
+    sendEmailAndNotification($email, $subject, $message, $notificationText);
+}
 }
 ?>
 
