@@ -14,11 +14,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Debug and print file paths for PHPMailer includes
-debugFilePath('PHPMailer-master/src/Exception.php');
-debugFilePath('PHPMailer-master/src/PHPMailer.php');
-debugFilePath('PHPMailer-master/src/SMTP.php');
-
 require 'PHPMailer-master/src/Exception.php';
 require 'PHPMailer-master/src/PHPMailer.php';
 require 'PHPMailer-master/src/SMTP.php';
