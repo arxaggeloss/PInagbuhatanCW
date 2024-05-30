@@ -164,17 +164,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if (isset($_POST['send_reply'])) {
-        $medical_assistance_id = $_POST['medical_assistance_id'];
-        $email = $_POST['email'];
-        $message = $_POST['message'];
+  if (isset($_POST['send_reply'])) {
+    $medical_assistance_id = $_POST['medical_assistance_id'];
+    $email = $_POST['email'];
 
-        // Send email
-        $subject = "Reply to Your Medical Assistance Request";
-        $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
+    // Fetch relevant data for sending email notification
+    $fetchSql = "SELECT medical_assistance_id, patient_name, email, medical_condition, created_at FROM medical_assistance WHERE medical_assistance_id=?";
+    $fetchStmt = $conn->prepare($fetchSql);
+    $fetchStmt->bind_param("i", $medical_assistance_id);
+    $fetchStmt->execute();
+    $result = $fetchStmt->get_result();
+    $row = $result->fetch_assoc();
 
-        sendEmailAndNotification($email, $subject, $message, $notificationText);
-    }
+    // Construct the email content
+    $subject = "Reply to Your Medical Assistance Request";
+    $message = "ID: " . $row['medical_assistance_id'] . "\n";
+    $message .= "Patient Name: " . $row['patient_name'] . "\n";
+    $message .= "Email: " . $row['email'] . "\n";
+    $message .= "Medical Condition: " . $row['medical_condition'] . "\n";
+    $message .= "Submission Date: " . $row['created_at'] . "\n";
+    $message .= "\n";
+    $message .= "Your custom message goes here."; // Add your custom message here
+
+    // Define the notification text
+    $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
+
+    // Send email
+    sendEmailAndNotification($email, $subject, $message, $notificationText);
+}
 }
 ?>
 
