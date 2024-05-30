@@ -42,7 +42,7 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
         $mail->SMTPSecure = 'tls'; // Enable TLS encryption, 'ssl' is also possible
 
         // Sender and recipient details
-        $mail->setFrom('staanatandaan@gmail.com', 'Sta Ana Love'); // Replace with sender's email and name
+        $mail->setFrom('staanatandaan@gmail.com', 'PinagbuhatanCW'); // Replace with sender's email and name
         $mail->addAddress($to); // Use the provided user's email
 
         // Email content
@@ -55,7 +55,7 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
         $recipientMessage .= "<p>We acknowledge the importance of your request and assure you that our team is diligently working to address it. You will receive further updates and assistance shortly.</p>";
         $recipientMessage .= "<p>Thank you for choosing our service.</p>";
         $recipientMessage .= "<p>Best regards,</p>";
-        $recipientMessage .= "<p>Sta Ana Love Team</p>";
+        $recipientMessage .= "<p>PinagbuhatanCW Team</p>";
 
         // Combined message (original message + recipient message)
         $fullMessage = $message . $recipientMessage;
