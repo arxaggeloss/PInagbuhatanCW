@@ -142,29 +142,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
    if (isset($_POST['send_reply'])) {
-    $medical_assistance_id = $_POST['medical_assistance_id'];
+    $help_desk_id = $_POST['help_desk_id'];
     $email = $_POST['email'];
 
     // Fetch relevant data for sending email notification
-    $fetchSql = "SELECT medical_assistance_id, patient_name, email, medical_condition, created_at FROM medical_assistance WHERE medical_assistance_id=?";
+    $fetchSql = "SELECT help_desk_id, name, email, message, submission_date FROM helpdesk WHERE help_desk_id=?";
     $fetchStmt = $conn->prepare($fetchSql);
-    $fetchStmt->bind_param("i", $medical_assistance_id);
+    $fetchStmt->bind_param("i", $help_desk_id);
     $fetchStmt->execute();
     $result = $fetchStmt->get_result();
     $row = $result->fetch_assoc();
 
     // Construct the email content
-    $subject = "Reply to Your Medical Assistance Request";
-    $message = "ID: " . $row['medical_assistance_id'] . "<br>";
-    $message .= "Patient Name: " . $row['patient_name'] . "<br>";
+    $subject = "Reply to Your Helpdesk Request";
+    $message = "ID: " . $row['help_desk_id'] . "<br>";
+    $message .= "Name: " . $row['name'] . "<br>";
     $message .= "Email: " . $row['email'] . "<br>";
-    $message .= "Medical Condition: " . $row['medical_condition'] . "<br>";
-    $message .= "Submission Date: " . $row['created_at'] . "<br><br>";
-    $message .= "Your message:<br>"; // Add bullet point for the message
-    $message .= "<ul><li>" . nl2br($_POST['message']) . "</li></ul>"; // Add the message from the admin reply
+    $message .= "Message: " . $row['message'] . "<br>";
+    $message .= "Submission Date: " . $row['submission_date'] . "<br><br>";
+    $message .= "Your reply:<br>"; // Add bullet point for the reply
+    $message .= "<ul><li>" . nl2br($_POST['message']) . "</li></ul>"; // Add the reply from the admin
 
     // Define the notification text
-    $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
+    $notificationText = "You have received a reply to your helpdesk request with ID: $help_desk_id.";
 
     // Send email
     sendEmailAndNotification($email, $subject, $message, $notificationText);
