@@ -1,10 +1,16 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require 'C:\xampp\htdocs\TANDAAN\PHPMailer-master\src\Exception.php';
-require 'C:\xampp\htdocs\TANDAAN\PHPMailer-master\src\PHPMailer.php';
-require 'C:\xampp\htdocs\TANDAAN\PHPMailer-master\src\SMTP.php';
+require '../../PHPMailer-master/src/Exception.php';
+require '../../PHPMailer-master/src/PHPMailer.php';
+require '../../PHPMailer-master/src/SMTP.php';
+
 
 $mail = new PHPMailer(true);
 
