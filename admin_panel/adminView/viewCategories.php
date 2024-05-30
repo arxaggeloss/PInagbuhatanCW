@@ -164,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-  if (isset($_POST['send_reply'])) {
+if (isset($_POST['send_reply'])) {
     $medical_assistance_id = $_POST['medical_assistance_id'];
     $email = $_POST['email'];
 
@@ -182,9 +182,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $message .= "Patient Name: " . $row['patient_name'] . "\n";
     $message .= "Email: " . $row['email'] . "\n";
     $message .= "Medical Condition: " . $row['medical_condition'] . "\n";
-    $message .= "Submission Date: " . $row['created_at'] . "\n";
-    $message .= "\n";
-    $message .= "Your custom message goes here."; // Add your custom message here
+    $message .= "Submission Date: " . $row['created_at'] . "\n\n";
+    $message .= "- Your message: \n"; // Add bullet point for the message
+    $message .= "  - " . $_POST['message']; // Add the message from the admin reply
 
     // Define the notification text
     $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
