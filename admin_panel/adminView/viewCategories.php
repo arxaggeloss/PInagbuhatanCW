@@ -9,6 +9,7 @@ function debugFilePath($file) {
 
 // Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 // Debug and print file paths for PHPMailer includes
