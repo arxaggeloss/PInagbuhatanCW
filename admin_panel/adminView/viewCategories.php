@@ -178,13 +178,13 @@ if (isset($_POST['send_reply'])) {
 
     // Construct the email content
     $subject = "Reply to Your Medical Assistance Request";
-    $message = "ID: " . $row['medical_assistance_id'] . "\n";
-    $message .= "Patient Name: " . $row['patient_name'] . "\n";
-    $message .= "Email: " . $row['email'] . "\n";
-    $message .= "Medical Condition: " . $row['medical_condition'] . "\n";
-    $message .= "Submission Date: " . $row['created_at'] . "\n\n";
-    $message .= "- Your message: \n"; // Add bullet point for the message
-    $message .= "  - " . $_POST['message']; // Add the message from the admin reply
+    $message = "ID: " . $row['medical_assistance_id'] . "<br>";
+    $message .= "Patient Name: " . $row['patient_name'] . "<br>";
+    $message .= "Email: " . $row['email'] . "<br>";
+    $message .= "Medical Condition: " . $row['medical_condition'] . "<br>";
+    $message .= "Submission Date: " . $row['created_at'] . "<br><br>";
+    $message .= "Your message:<br>"; // Add bullet point for the message
+    $message .= "<ul><li>" . nl2br($_POST['message']) . "</li></ul>"; // Add the message from the admin reply
 
     // Define the notification text
     $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
