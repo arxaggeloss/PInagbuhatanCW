@@ -1,13 +1,24 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// Function to debug and print file paths
+function debugFilePath($file) {
+    echo "Resolved file path: " . realpath($file) . "<br>";
+}
+
 // Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require __DIR__ . '/PHPMailer-master/src/Exception.php';
-require __DIR__ . '/PHPMailer-master/src/PHPMailer.php';
-require __DIR__ . '/PHPMailer-master/src/SMTP.php';
+// Debug and print file paths for PHPMailer includes
+debugFilePath('PHPMailer-master/src/Exception.php');
+debugFilePath('PHPMailer-master/src/PHPMailer.php');
+debugFilePath('PHPMailer-master/src/SMTP.php');
+
+require 'PHPMailer-master/src/Exception.php';
+require 'PHPMailer-master/src/PHPMailer.php';
+require 'PHPMailer-master/src/SMTP.php';
 
 // Initialize PHPMailer
 $mail = new PHPMailer(true);
