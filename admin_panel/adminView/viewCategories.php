@@ -2,21 +2,15 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-echo "Current working directory: " . getcwd() . "<br>";
-
-// Check the resolved file paths for PHPMailer files
-echo "Resolved file path for Exception.php: " . realpath('PHPMailer-master/src/Exception.php') . "<br>";
-echo "Resolved file path for PHPMailer.php: " . realpath('PHPMailer-master/src/PHPMailer.php') . "<br>";
-echo "Resolved file path for SMTP.php: " . realpath('PHPMailer-master/src/SMTP.php') . "<br>";
-
 // Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer-master/src/Exception.php';
-require 'PHPMailer-master/src/PHPMailer.php';
-require 'PHPMailer-master/src/SMTP.php';
+require '../../PHPMailer-master/src/Exception.php';
+require '../../PHPMailer-master/src/PHPMailer.php';
+require '../../PHPMailer-master/src/SMTP.php';
+
 
 // Initialize PHPMailer
 $mail = new PHPMailer(true);
