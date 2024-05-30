@@ -2,10 +2,12 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Function to debug and print file paths
-function debugFilePath($file) {
-    echo "Resolved file path: " . realpath($file) . "<br>";
-}
+echo "Current working directory: " . getcwd() . "<br>";
+
+// Check the resolved file paths for PHPMailer files
+echo "Resolved file path for Exception.php: " . realpath('PHPMailer-master/src/Exception.php') . "<br>";
+echo "Resolved file path for PHPMailer.php: " . realpath('PHPMailer-master/src/PHPMailer.php') . "<br>";
+echo "Resolved file path for SMTP.php: " . realpath('PHPMailer-master/src/SMTP.php') . "<br>";
 
 // Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
