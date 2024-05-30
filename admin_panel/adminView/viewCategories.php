@@ -325,10 +325,6 @@ if (isset($_POST['send_reply'])) {
                 });
             });
 
-             $('#cancel-reply').click(function () {
-                $('#reply-form').hide();
-            });
-
             $('.reply').click(function () {
                 var medicalAssistanceId = $(this).data('id');
                 var email = $(this).data('email');
@@ -338,6 +334,11 @@ if (isset($_POST['send_reply'])) {
                 $('#reply-email').val(email);
                 $('#reply-form').show();
             });
+
+             $('#cancel-reply').click(function () {
+                $('#reply-form').hide();
+            });
+
 
             $('#reply-form-inner').submit(function (e) {
                 e.preventDefault();
