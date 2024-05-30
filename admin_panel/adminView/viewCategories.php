@@ -262,6 +262,7 @@ if (isset($_POST['send_reply'])) {
                     <textarea id="reply-message" name="message" rows="4" cols="50"></textarea>
                 </div>
                 <button type="submit">Send Reply</button>
+                <button type="button" id="cancel-reply">Cancel</button> <!-- Cancel button -->
             </form>
         </div>
     </div>
@@ -335,10 +336,9 @@ if (isset($_POST['send_reply'])) {
                 $('#reply-form').show();
             });
 
-             $('#cancel-reply').click(function () {
+            $('#cancel-reply').click(function () {
                 $('#reply-form').hide();
             });
-
 
             $('#reply-form-inner').submit(function (e) {
                 e.preventDefault();
