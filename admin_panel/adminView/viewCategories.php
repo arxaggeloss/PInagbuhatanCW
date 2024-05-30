@@ -325,6 +325,10 @@ if (isset($_POST['send_reply'])) {
                 });
             });
 
+             $('#cancel-reply').click(function () {
+                $('#reply-form').hide();
+            });
+
             $('.reply').click(function () {
                 var medicalAssistanceId = $(this).data('id');
                 var email = $(this).data('email');
