@@ -36,7 +36,7 @@ if (isset($_POST['addEvent'])) {
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
         exit();
     } else {
-        echo "Error adding event: " . $conn->error;
+        echo "Error adding event: " . $conn->error . "<br>SQL: " . $sql;
     }
 }
 
@@ -52,7 +52,7 @@ if (isset($_POST['editEvent'])) {
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
         exit();
     } else {
-        echo "Error updating event: " . $conn->error;
+        echo "Error updating event: " . $conn->error . "<br>SQL: " . $sql;
     }
 }
 
@@ -64,7 +64,7 @@ if (isset($_POST['deleteEvent'])) {
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
         exit();
     } else {
-        echo "Error deleting event: " . $conn->error;
+        echo "Error deleting event: " . $conn->error . "<br>SQL: " . $sql;
     }
 }
 ?>
