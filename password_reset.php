@@ -1,14 +1,22 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer-master/src/Exception.php';
+require 'PHPMailer-master/src/PHPMailer.php';
+require 'PHPMailer-master/src/SMTP.php';
+
 session_start();
 
 $success_message = ""; // Initialize success message variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Database connection parameters
-$servername = "pinagbuhatancw.mysql.database.azure.com";
-$username_db = "pinagbuhatancw";
-$password_db = 'pa$$word1';
-$database = "tandaandb";
+    $servername = "pinagbuhatancw.mysql.database.azure.com";
+    $username_db = "pinagbuhatancw";
+    $password_db = 'pa$$word1';
+    $database = "tandaandb";
 
     // Create a connection to the database
     $conn = new mysqli($servername, $username_db, $password_db, $database);
@@ -20,49 +28,67 @@ $database = "tandaandb";
     $email = $_POST['email'];
     $new_password = $_POST['new_password'];
 
-    // Check if the new password is the same as the last password
-    $check_last_password_query = "SELECT password FROM user WHERE email = ?";
-    $stmt_check = $conn->prepare($check_last_password_query);
-    $stmt_check->bind_param("s", $email);
-    $stmt_check->execute();
-    $result = $stmt_check->get_result();
-    $user_row = $result->fetch_assoc();
-    $last_password = $user_row['password'];
+    // Generate OTP
+    $otp = generateOTP();
 
-    if (password_verify($new_password, $last_password)) {
-        $success_message = "Password is the same as the last password.";
+    // Send OTP to the user's email
+    if (sendOTP($email, $otp)) {
+        $_SESSION['otp'] = $otp; // Store OTP in session for verification
+        $_SESSION['reset_email'] = $email; // Store user's email in session for verification
+        $success_message = "A 6-digit code has been sent to your email for verification.";
     } else {
-        // Update the user's password in the database
-        $update_password_query = "UPDATE user SET password = ? WHERE email = ?";
-        $stmt = $conn->prepare($update_password_query);
-        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-        $stmt->bind_param("ss", $hashed_password, $email);
-        $stmt->execute();
-
-        // Redirect to login page if password reset is successful
-        if ($stmt->affected_rows > 0) {
-            $success_message = "Password reset successful.";
-            $_SESSION['success_message'] = $success_message;
-        } else {
-            // Display a success message
-            $success_message = "Password reset unsuccessful. Please try again and refresh the page.";
-        }
+        $success_message = "Failed to send OTP. Please try again.";
     }
 
-    // Close the statements if they are set
-    if (isset($stmt)) {
-        $stmt->close();
-    }
-    if (isset($stmt_check)) {
-        $stmt_check->close();
-    }
+    // Close the database connection
     $conn->close();
 }
 
-// Check if there's a success message in the session and reset it
-if (isset($_SESSION['success_message'])) {
-    $success_message = $_SESSION['success_message'];
-    unset($_SESSION['success_message']);
+// Function to generate OTP
+function generateOTP($length = 6) {
+    $otp = "";
+    $digits = "0123456789";
+    $otp_length = strlen($digits);
+
+    for ($i = 0; $i < $length; $i++) {
+        $otp .= $digits[rand(0, $otp_length - 1)];
+    }
+
+    return $otp;
+}
+
+// Function to send OTP via email using PHPMailer
+function sendOTP($email, $otp) {
+    $mail = new PHPMailer(true); // Enable exceptions
+
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com'; // Your SMTP server
+        $mail->SMTPAuth = true;
+        $mail->Username = 'staanatandaan@gmail.com'; // Your SMTP username (sender email)
+        $mail->Password = 'nycgsvxjrhrndoab'; // Your SMTP password
+        $mail->Port = 587; // Adjust the SMTP port if needed
+        $mail->SMTPSecure = 'tls'; // Enable TLS encryption, 'ssl' is also possible
+
+        // Sender and recipient details
+        $mail->setFrom('staanatandaan@gmail.com', 'PinagbuhatanCW'); // Replace with sender's email and name
+        $mail->addAddress($email); // Use the provided user's email
+
+        // Email content
+        $mail->isHTML(true);
+        $mail->Subject = 'Password Reset OTP';
+        $mail->Body = 'Your 6-digit OTP for password reset: ' . $otp;
+
+        // Sending email
+        if ($mail->send()) {
+            return true; // Return true if OTP sent successfully
+        } else {
+            return false; // Return false if sending OTP failed
+        }
+    } catch (Exception $e) {
+        return false; // Return false if an exception occurred
+    }
 }
 ?>
 
@@ -173,7 +199,7 @@ if (isset($_SESSION['success_message'])) {
         </div>
     </div>
     <div class="container">
-        <h2>Password Reset</h2>
+                <h2>Password Reset</h2>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <label for="email">Enter your email:</label><br>
             <input type="email" id="email" name="email" required><br>
@@ -196,3 +222,4 @@ if (isset($_SESSION['success_message'])) {
     </div>
 </body>
 </html>
+
