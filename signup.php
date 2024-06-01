@@ -104,7 +104,12 @@ if (
             echo "This email address is already registered. Please use a different email.";
         } else {
             // Email doesn't exist, proceed with registration
-            // Password complexity validation code remains unchanged
+            
+$passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/';
+if (!preg_match($passwordRegex, $password)) {
+    echo "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, and be at least 8 characters long.";
+    exit();
+}
 
             // Hash the password before storing it in the database for security
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
