@@ -43,6 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_event'])) {
     exit();
 }
 
+// Add Event
+if (isset($_POST['addEvent'])) {
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $start_datetime = $_POST['start_datetime'];
+    $end_datetime = $_POST['end_datetime'];
+    $sql = "INSERT INTO events (title, description, start_datetime, end_datetime) VALUES ('$title', '$description', '$start_datetime', '$end_datetime')";
+    if ($conn->query($sql) === TRUE) {
+        logAction($conn, $conn->insert_id, 'Event added');
+        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
+        exit();
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
 // Fetch Events
 function getEventsFromDatabase() {
     global $conn;
@@ -95,6 +111,21 @@ function getEventsFromDatabase() {
         </table>
     </div>
 
+    <div>
+        <h2>Add Event</h2>
+        <form method="post">
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title" required><br>
+            <label for="description">Description:</label><br>
+            <textarea id="description" name="description"></textarea><br>
+            <label for="start_datetime">Start Date and Time:</label><br>
+            <input type="datetime-local" id="start_datetime" name="start_datetime" required><br>
+            <label for="end_datetime">End Date and Time:</label><br>
+            <input type="datetime-local" id="end_datetime" name="end_datetime" required><br>
+            <button type="submit" name="addEvent">Add Event</button>
+        </form>
+    </div>
+
     <div id="editEventForm" style="display:none;">
         <h2>Edit Event</h2>
         <form id="editEventFormContent">
@@ -137,8 +168,8 @@ function getEventsFromDatabase() {
                     alert(response);
                     location.reload();
                 },
-                error: function() {
-                    alert('Error updating event.');
+                error: function(xhr, status, error) {
+                    alert('Error updating event: ' + xhr.responseText);
                 }
             });
         }
@@ -153,8 +184,8 @@ function getEventsFromDatabase() {
                         alert(response);
                         location.reload();
                     },
-                    error: function() {
-                        alert('Error deleting event.');
+                    error: function(xhr, status, error) {
+                        alert('Error deleting event: ' + xhr.responseText);
                     }
                 });
             }
