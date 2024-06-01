@@ -60,7 +60,7 @@ function sendOTP($email, $otp) {
         // Email content
         $mail->isHTML(true);
         $mail->Subject = 'Your OTP for Verification';
-        $mail->Body = 'Your OTP is: ' . $otp;
+        $mail->Body = "Hi Pasigueño,\n\nYour OTP code is $otp. Please don't share this code with anyone. Use this PIN to validate your account login. Thank you and have a nice day!";
 
         // Sending email
         if ($mail->send()) {
@@ -101,15 +101,15 @@ if (
 
         if ($result_existing_email && $result_existing_email->num_rows > 0) {
             // Email already exists, display message to the user
-            echo "This email address is already registered. Please use a different email.";
+            echo "<script>alert('This email address is already registered. Please use a different email.');</script>";
         } else {
             // Email doesn't exist, proceed with registration
             
-$passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/';
-if (!preg_match($passwordRegex, $password)) {
-    echo "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, and be at least 8 characters long.";
-    exit();
-}
+            $passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/';
+            if (!preg_match($passwordRegex, $password)) {
+                echo "<script>alert('Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, and be at least 8 characters long.');</script>";
+                exit();
+            }
 
             // Hash the password before storing it in the database for security
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -134,11 +134,11 @@ if (!preg_match($passwordRegex, $password)) {
                     exit();
                 } else {
                     // Error sending OTP, handle the error or display a message
-                    echo "Error sending OTP. Please try again.";
+                    echo "<script>alert('Error sending OTP. Please try again.');</script>";
                 }
             } else {
                 // Registration failed, handle the error or display a message
-                echo "Registration failed. Please try again.";
+                echo "<script>alert('Registration failed. Please try again.');</script>";
             }
 
             // Close the statement
