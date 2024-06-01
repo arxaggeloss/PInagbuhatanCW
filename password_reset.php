@@ -195,10 +195,12 @@ function sendOTP($email, $otp) {
             margin-top: 10px;
         }
 
-        .error-message {
+                .error-message {
             color: red;
             margin-top: 10px;
-                    .hidden {
+        }
+
+        .hidden {
             display: none; /* Hide the element */
         }
     </style>
@@ -222,10 +224,12 @@ function sendOTP($email, $otp) {
             <input type="password" id="new_password" name="new_password" required><br>
             <?php if ($success_message !== ""): ?>
                 <?php if (strpos($success_message, "successful") === false): ?>
-                    <div id="otp_input" class="hidden"> <!-- Hide this by default -->
-                        <label for="otp">Enter OTP:</label><br>
-                        <input type="text" id="otp" name="otp" required><br>
-                    </div>
+                    <?php if (strpos($success_message, "same") === false): ?>
+                        <div id="otp_input"> <!-- Remove the "hidden" class -->
+                            <label for="otp">Enter OTP:</label><br>
+                            <input type="text" id="otp" name="otp" required><br>
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
             <?php endif; ?>
             <button type="submit">Reset Password</button>
@@ -239,10 +243,6 @@ function sendOTP($email, $otp) {
                     </script>
                 <?php else: ?>
                     <div class="error-message"><?php echo $success_message; ?></div>
-                    <script>
-                        // Show the OTP input field if there was an error
-                        document.getElementById('otp_input').classList.remove('hidden');
-                    </script>
                 <?php endif; ?>
             <?php endif; ?>
         </form>
