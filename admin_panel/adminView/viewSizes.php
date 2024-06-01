@@ -66,42 +66,33 @@ function getEventsFromDatabase() {
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.js'></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            if (!calendarEl) {
-                console.error('Calendar element not found!');
-                return; // Exit function if calendar element is not found
-            }
-
-            console.log('DOM fully loaded. Initializing FullCalendar...');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: <?php echo getEventsFromDatabase(); ?>,
-                editable: true,
-                selectable: true,
-                select: function(info) {
-                    var title = prompt('Enter event title:');
-                    if (title) {
-                        var eventData = {
-                            title: title,
-                            start: info.startStr,
-                            end: info.endStr
-                        };
-                        calendar.addEvent(eventData);
-                        // You can also save eventData to the database here
-                    }
-                },
-                eventClick: function(info) {
-                    if (confirm("Delete event?")) {
-                        info.event.remove();
-                        // You can also delete the event from the database here
-                    }
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: <?php echo getEventsFromDatabase(); ?>,
+            editable: true,
+            selectable: true,
+            select: function(info) {
+                var title = prompt('Enter event title:');
+                if (title) {
+                    var eventData = {
+                        title: title,
+                        start: info.startStr,
+                        end: info.endStr
+                    };
+                    calendar.addEvent(eventData);
+                    // You can also save eventData to the database here
                 }
-            });
-
-            console.log('FullCalendar initialized successfully.');
-            calendar.render();
+            },
+            eventClick: function(info) {
+                if (confirm("Delete event?")) {
+                    info.event.remove();
+                    // You can also delete the event from the database here
+                }
+            }
         });
+
+        calendar.render();
     </script>
 </body>
 
