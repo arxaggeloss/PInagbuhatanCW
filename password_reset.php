@@ -28,16 +28,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $new_password = $_POST['new_password'];
 
-    // Generate OTP
-    $otp = generateOTP();
+    // Check if the new password is the same as the last password
+    $check_last_password_query = "SELECT password FROM user WHERE email = ?";
+    $stmt_check = $conn->prepare($check_last_password_query);
+    $stmt_check->bind_param("s", $email);
+    $stmt_check->execute();
+    $result = $stmt_check->get_result();
+    $user_row = $result->fetch_assoc();
+    $last_password = $user_row['password'];
 
-    // Send OTP to the user's email
-    if (sendOTP($email, $otp)) {
-        $_SESSION['otp'] = $otp; // Store OTP in session for verification
-        $_SESSION['reset_email'] = $email; // Store user's email in session for verification
-        $success_message = "A 6-digit code has been sent to your email for verification.";
+    if (password_verify($new_password, $last_password)) {
+        $success_message = "Password is the same as the last password.";
     } else {
-        $success_message = "Failed to send OTP. Please try again.";
+        // Generate OTP
+        $otp = generateOTP();
+
+        // Send OTP to the user's email
+        if (sendOTP($email, $otp)) {
+            $_SESSION['otp'] = $otp; // Store OTP in session for verification
+            $_SESSION['reset_email'] = $email; // Store user's email in session for verification
+            $success_message = "A 6-digit code has been sent to your email for verification.";
+        } else {
+            $success_message = "Failed to send OTP. Please try again.";
+        }
     }
 
     // Close the database connection
@@ -190,36 +203,42 @@ function sendOTP($email, $otp) {
 </head>
 <body>
     <div class="header">
-        <div class="icon">
-            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
-        </div>
-        <div class="title">
-            <h2>Barangay Pinagbuhatan</h2>
-            <p>Community Website</p>
-        </div>
+    <div class="icon">
+        <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
     </div>
-    <div class="container">
-                <h2>Password Reset</h2>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-            <label for="email">Enter your email:</label><br>
-            <input type="email" id="email" name="email" required><br>
-            <label for="new_password">Enter your new password:</label><br>
-            <input type="password" id="new_password" name="new_password" required><br>
-            <button type="submit">Reset Password</button>
-            <?php if ($success_message !== ""): ?>
-                <?php if (strpos($success_message, "successful") !== false): ?>
-                    <div class="success-message"><?php echo $success_message; ?></div>
-                    <script>
-                        setTimeout(function(){
-                            window.location.href = 'login.php';
-                        }, 3000);
-                    </script>
-                <?php else: ?>
-                    <div class="error-message"><?php echo $success_message; ?></div>
-                <?php endif; ?>
+    <div class="title">
+        <h2>Barangay Pinagbuhatan</h2>
+        <p>Community Website</p>
+    </div>
+</div>
+<div class="container">
+    <h2>Password Reset</h2>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <label for="email">Enter your email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="new_password">Enter your new password:</label><br>
+        <input type="password" id="new_password" name="new_password" required><br>
+        <?php if ($success_message !== ""): ?>
+            <?php if (strpos($success_message, "successful") === false): ?>
+                <label for="otp">Enter OTP:</label><br>
+                <input type="text" id="otp" name="otp" required><br>
             <?php endif; ?>
-        </form>
-    </div>
+        <?php endif; ?>
+        <button type="submit">Reset Password</button>
+        <?php if ($success_message !== ""): ?>
+            <?php if (strpos($success_message, "successful") !== false): ?>
+                <div class="success-message"><?php echo $success_message; ?></div>
+                <script>
+                    setTimeout(function(){
+                        window.location.href = 'login.php';
+                    }, 3000);
+                </script>
+            <?php else: ?>
+                <div class="error-message"><?php echo $success_message; ?></div>
+            <?php endif; ?>
+        <?php endif; ?>
+    </form>
+</div>
 </body>
 </html>
 
