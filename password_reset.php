@@ -50,19 +50,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_update_otp->bind_param("ss", $new_otp, $email);
         $stmt_update_otp->execute();
 
-        // Check if OTP was updated successfully
-        if ($stmt_update_otp->affected_rows > 0) {
-            // Send new OTP to the user's email
-            $mail = new PHPMailer(true); // Create a new PHPMailer instance
-            if (sendOTP($mail, $email, $new_otp)) {
-                $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
-                $_SESSION['reset_email'] = $email; // Store user's email in session for verification
-                $success_message = "A 6-digit code has been sent to your email for verification.";
-            } else {
-                $success_message = "Failed to send OTP. Please try again.";
-            }
+        // Send new OTP to the user's email
+        $mail = new PHPMailer(true); // Create a new PHPMailer instance
+        if (sendOTP($mail, $email, $new_otp)) {
+            $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
+            $_SESSION['reset_email'] = $email; // Store user's email in session for verification
+            $success_message = "Password reset successful. A 6-digit code has been sent to your email for verification.";
         } else {
-            $success_message = "Failed to update OTP in the database.";
+            $success_message = "Failed to send OTP. Please try again.";
         }
     }
 
@@ -192,7 +187,7 @@ function sendOTP($mail, $email, $otp) {
         }
 
         button {
-            padding: 10px;
+           padding: 10px;
             cursor: pointer;
             width: calc(100% - 20px);
             border-radius: 5px;
@@ -228,6 +223,18 @@ function sendOTP($mail, $email, $otp) {
     </div>
     <div class="container">
         <h2>Password Reset</h2>
+        <?php if ($success_message !== ""): ?>
+            <?php if (strpos($success_message, "successful") !== false): ?>
+                <div class="success-message"><?php echo $success_message; ?></div>
+                <script>
+                    setTimeout(function(){
+                        window.location.href = 'login.php';
+                    }, 3000);
+                </script>
+            <?php else: ?>
+                <div class="error-message"><?php echo $success_message; ?></div>
+            <?php endif; ?>
+        <?php endif; ?>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <label for="email">Enter your email:</label><br>
             <input type="email" id="email" name="email" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"><br>
@@ -235,27 +242,13 @@ function sendOTP($mail, $email, $otp) {
             <input type="password" id="new_password" name="new_password" required value="<?php echo isset($_POST['new_password']) ? htmlspecialchars($_POST['new_password']) : ''; ?>"><br>
             <?php if ($success_message !== ""): ?>
                 <?php if (strpos($success_message, "successful") === false): ?>
-                    <?php if (strpos($success_message, "same") === false): ?>
-                        <div id="otp_input"> <!-- Remove the "hidden" class -->
-                            <label for="otp">Enter OTP:</label><br>
-                            <input type="text" id="otp" name="otp" required><br>
-                        </div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="success-message"><?php echo $success_message; ?></div>
-                    <script>
-                        setTimeout(function(){
-                            window.location.href = 'login.php';
-                        }, 3000);
-                    </script>
+                    <div id="otp_input"> <!-- Remove the "hidden" class -->
+                        <label for="otp">Enter OTP:</label><br>
+                        <input type="text" id="otp" name="otp" required><br>
+                    </div>
                 <?php endif; ?>
             <?php endif; ?>
             <button type="submit">Reset Password</button>
-            <?php if ($success_message !== ""): ?>
-                <?php if (strpos($success_message, "same") !== false): ?>
-                    <div class="error-message"><?php echo $success_message; ?></div>
-                <?php endif; ?>
-            <?php endif; ?>
         </form>
     </div>
 </body>
