@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Events</title>
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.7.2/main.min.css' rel='stylesheet' />
+    <link href='fullcalendar/main.min.css' rel='stylesheet' />
 </head>
 
 <body>
@@ -13,7 +13,7 @@
         <div id='calendar'></div>
     </div>
 
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.7.2/main.min.js'></script>
+    <script src='fullcalendar/main.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
