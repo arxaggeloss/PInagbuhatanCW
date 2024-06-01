@@ -54,7 +54,7 @@ function sendOTP($email, $otp) {
         $mail->SMTPSecure = 'tls'; // Enable TLS encryption, 'ssl' is also possible
 
         // Sender and recipient details
-        $mail->setFrom('staanatandaan@gmail.com', 'Sta Ana Love Ko'); // Replace with sender's email and name
+        $mail->setFrom('staanatandaan@gmail.com', 'PinagbuhatanCW'); // Replace with sender's email and name
         $mail->addAddress($email); // Use the provided user's email
 
         // Email content
