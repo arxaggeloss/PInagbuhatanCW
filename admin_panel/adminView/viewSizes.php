@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Events</title>
-    <link href='fullcalendar/main.min.css' rel='stylesheet' />
+    <link href='fullcalendar/lib/main.min.css' rel='stylesheet' />
 </head>
 
 <body>
@@ -13,7 +13,7 @@
         <div id='calendar'></div>
     </div>
 
-    <script src='fullcalendar/main.min.js'></script>
+    <script src='fullcalendar/lib/main.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
