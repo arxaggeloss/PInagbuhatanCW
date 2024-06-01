@@ -2,8 +2,8 @@
 include_once "../config/dbconnect.php";
 
 // Function to log actions
-function logAction($conn, $eventId, $action) {
-    $logSql = "INSERT INTO logs (event_id, action) VALUES ($eventId, '$action')";
+function logAction($conn, $userId, $action) {
+    $logSql = "INSERT INTO logs (user_id, action) VALUES ($userId, '$action')";
     $conn->query($logSql);
 }
 
@@ -12,7 +12,7 @@ if (isset($_GET['delete_event'])) {
     $eventId = $_GET['delete_event'];
     $deleteSql = "DELETE FROM events WHERE id = $eventId";
     if ($conn->query($deleteSql) === TRUE) {
-        logAction($conn, $eventId, 'Event deleted');
+        logAction($conn, 1, 'Event deleted'); // Assuming user_id is 1 for example purposes
         echo "Event deleted successfully.";
     } else {
         echo "Error deleting event: " . $conn->error;
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_event'])) {
                     end_datetime = '$end_datetime'
                   WHERE id = $eventId";
     if ($conn->query($updateSql) === TRUE) {
-        logAction($conn, $eventId, 'Event updated');
+        logAction($conn, 1, 'Event updated'); // Assuming user_id is 1 for example purposes
         echo "Event updated successfully.";
     } else {
         echo "Error updating event: " . $conn->error;
@@ -49,9 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_event'])) {
     $description = $_POST['description'];
     $start_datetime = $_POST['start_datetime'];
     $end_datetime = $_POST['end_datetime'];
-    $sql = "INSERT INTO events (title, description, start_datetime, end_datetime) VALUES ('$title', '$description', '$start_datetime', '$end_datetime')";
-    if ($conn->query($sql) === TRUE) {
-        logAction($conn, $conn->insert_id, 'Event added');
+
+    $addSql = "INSERT INTO events (title, description, start_datetime, end_datetime) VALUES ('$title', '$description', '$start_datetime', '$end_datetime')";
+    if ($conn->query($addSql) === TRUE) {
+        logAction($conn, 1, 'Event added'); // Assuming user_id is 1 for example purposes
         echo "Event added successfully.";
     } else {
         echo "Error adding event: " . $conn->error;
