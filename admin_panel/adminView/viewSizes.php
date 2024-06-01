@@ -1,7 +1,49 @@
 <?php
 include_once "../config/dbconnect.php";
 
-// Function to fetch events from the database
+// Function to log actions
+function logAction($conn, $eventId, $action) {
+    $logSql = "INSERT INTO logs (event_id, action) VALUES ($eventId, '$action')";
+    $conn->query($logSql);
+}
+
+// Delete Event
+if (isset($_GET['delete_event'])) {
+    $eventId = $_GET['delete_event'];
+    $deleteSql = "DELETE FROM events WHERE id = $eventId";
+    if ($conn->query($deleteSql) === TRUE) {
+        logAction($conn, $eventId, 'Event deleted');
+        echo "Event deleted successfully.";
+    } else {
+        echo "Error deleting event: " . $conn->error;
+    }
+    exit();
+}
+
+// Update Event via AJAX
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_event'])) {
+    $eventId = $_POST['event_id'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $start_datetime = $_POST['start_datetime'];
+    $end_datetime = $_POST['end_datetime'];
+
+    $updateSql = "UPDATE events SET 
+                    title = '$title', 
+                    description = '$description', 
+                    start_datetime = '$start_datetime', 
+                    end_datetime = '$end_datetime'
+                  WHERE id = $eventId";
+    if ($conn->query($updateSql) === TRUE) {
+        logAction($conn, $eventId, 'Event updated');
+        echo "Event updated successfully.";
+    } else {
+        echo "Error updating event: " . $conn->error;
+    }
+    exit();
+}
+
+// Fetch Events
 function getEventsFromDatabase() {
     global $conn;
     $sql = "SELECT id, title, description, start_datetime, end_datetime FROM events";
@@ -16,7 +58,7 @@ function getEventsFromDatabase() {
             echo "<td>" . $row["end_datetime"] . "</td>";
             echo "<td>";
             echo "<button onclick='editEvent(" . $row["id"] . ", \"" . $row["title"] . "\", \"" . $row["description"] . "\", \"" . $row["start_datetime"] . "\", \"" . $row["end_datetime"] . "\")'>Edit</button>";
-            echo "<form method='post' style='display:inline;'><input type='hidden' name='event_id' value='" . $row["id"] . "'><button type='submit' name='deleteEvent'>Delete</button></form>";
+            echo "<button onclick='deleteEvent(" . $row["id"] . ")'>Delete</button>";
             echo "</td>";
             echo "</tr>";
         }
@@ -24,59 +66,15 @@ function getEventsFromDatabase() {
         echo "<tr><td colspan='6'>No events found</td></tr>";
     }
 }
-
-// Add event to the database
-if (isset($_POST['addEvent'])) {
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $start_datetime = $_POST['start_datetime'];
-    $end_datetime = $_POST['end_datetime'];
-    $sql = "INSERT INTO events (title, description, start_datetime, end_datetime) VALUES ('$title', '$description', '$start_datetime', '$end_datetime')";
-    if ($conn->query($sql) === TRUE) {
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
-        exit();
-    } else {
-        echo "Error adding event: " . $conn->error . "<br>SQL: " . $sql;
-    }
-}
-
-// Edit event in the database
-if (isset($_POST['editEvent'])) {
-    $id = $_POST['event_id'];
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $start_datetime = $_POST['start_datetime'];
-    $end_datetime = $_POST['end_datetime'];
-    $sql = "UPDATE events SET title='$title', description='$description', start_datetime='$start_datetime', end_datetime='$end_datetime' WHERE id=$id";
-    if ($conn->query($sql) === TRUE) {
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
-        exit();
-    } else {
-        echo "Error updating event: " . $conn->error . "<br>SQL: " . $sql;
-    }
-}
-
-// Delete event from the database
-if (isset($_POST['deleteEvent'])) {
-    $id = $_POST['event_id'];
-    $sql = "DELETE FROM events WHERE id=$id";
-    if ($conn->query($sql) === TRUE) {
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
-        exit();
-    } else {
-        echo "Error deleting event: " . $conn->error . "<br>SQL: " . $sql;
-    }
-}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Events</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
     <div>
         <h2>Events</h2>
@@ -97,25 +95,10 @@ if (isset($_POST['deleteEvent'])) {
         </table>
     </div>
 
-    <div>
-        <h2>Add Event</h2>
-        <form method="post">
-            <label for="title">Title:</label><br>
-            <input type="text" id="title" name="title" required><br>
-            <label for="description">Description:</label><br>
-            <textarea id="description" name="description"></textarea><br>
-            <label for="start_datetime">Start Date and Time:</label><br>
-            <input type="datetime-local" id="start_datetime" name="start_datetime" required><br>
-            <label for="end_datetime">End Date and Time:</label><br>
-            <input type="datetime-local" id="end_datetime" name="end_datetime" required><br>
-            <button type="submit" name="addEvent">Add Event</button>
-        </form>
-    </div>
-
     <div id="editEventForm" style="display:none;">
         <h2>Edit Event</h2>
-        <form method="post">
-            <input type="hidden" id="edit_event_id" name="event_id">
+        <form id="editEventFormContent">
+            <input type="hidden" name="event_id" id="edit_event_id">
             <label for="edit_title">Title:</label><br>
             <input type="text" id="edit_title" name="title" required><br>
             <label for="edit_description">Description:</label><br>
@@ -124,7 +107,7 @@ if (isset($_POST['deleteEvent'])) {
             <input type="datetime-local" id="edit_start_datetime" name="start_datetime" required><br>
             <label for="edit_end_datetime">End Date and Time:</label><br>
             <input type="datetime-local" id="edit_end_datetime" name="end_datetime" required><br>
-            <button type="submit" name="editEvent">Save Changes</button>
+            <button type="button" onclick="saveEventChanges()">Save Changes</button>
             <button type="button" onclick="cancelEdit()">Cancel</button>
         </form>
     </div>
@@ -142,7 +125,40 @@ if (isset($_POST['deleteEvent'])) {
         function cancelEdit() {
             document.getElementById('editEventForm').style.display = 'none';
         }
+
+        function saveEventChanges() {
+            var formData = $('#editEventFormContent').serialize() + '&update_event=true';
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+                data: formData,
+                success: function(response) {
+                    alert(response);
+                    location.reload();
+                },
+                error: function() {
+                    alert('Error updating event.');
+                }
+            });
+        }
+
+        function deleteEvent(eventId) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                $.ajax({
+                    type: 'GET',
+                    url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+                    data: { delete_event: eventId },
+                    success: function(response) {
+                        alert(response);
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Error deleting event.');
+                    }
+                });
+            }
+        }
     </script>
 </body>
-
 </html>
