@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_event'])) {
 }
 
 // Add Event
-if (isset($_POST['addEvent'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_event'])) {
     $title = $_POST['title'];
     $description = $_POST['description'];
     $start_datetime = $_POST['start_datetime'];
@@ -52,11 +52,11 @@ if (isset($_POST['addEvent'])) {
     $sql = "INSERT INTO events (title, description, start_datetime, end_datetime) VALUES ('$title', '$description', '$start_datetime', '$end_datetime')";
     if ($conn->query($sql) === TRUE) {
         logAction($conn, $conn->insert_id, 'Event added');
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to refresh the page
-        exit();
+        echo "Event added successfully.";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error adding event: " . $conn->error;
     }
+    exit();
 }
 
 // Fetch Events
@@ -113,7 +113,7 @@ function getEventsFromDatabase() {
 
     <div>
         <h2>Add Event</h2>
-        <form method="post">
+        <form id="addEventForm">
             <label for="title">Title:</label><br>
             <input type="text" id="title" name="title" required><br>
             <label for="description">Description:</label><br>
@@ -122,7 +122,7 @@ function getEventsFromDatabase() {
             <input type="datetime-local" id="start_datetime" name="start_datetime" required><br>
             <label for="end_datetime">End Date and Time:</label><br>
             <input type="datetime-local" id="end_datetime" name="end_datetime" required><br>
-            <button type="submit" name="addEvent">Add Event</button>
+            <button type="button" onclick="addEvent()">Add Event</button>
         </form>
     </div>
 
@@ -170,6 +170,23 @@ function getEventsFromDatabase() {
                 },
                 error: function(xhr, status, error) {
                     alert('Error updating event: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function addEvent() {
+            var formData = $('#addEventForm').serialize() + '&add_event=true';
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+                data: formData,
+                success: function(response) {
+                    alert(response);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('Error adding event: ' + xhr.responseText);
                 }
             });
         }
