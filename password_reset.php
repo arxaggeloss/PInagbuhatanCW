@@ -198,47 +198,55 @@ function sendOTP($email, $otp) {
         .error-message {
             color: red;
             margin-top: 10px;
+                    .hidden {
+            display: none; /* Hide the element */
         }
     </style>
 </head>
 <body>
     <div class="header">
-    <div class="icon">
-        <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+        <div class="icon">
+            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+        </div>
+        <div class="title">
+            <h2>Barangay Pinagbuhatan</h2>
+            <p>Community Website</p>
+        </div>
     </div>
-    <div class="title">
-        <h2>Barangay Pinagbuhatan</h2>
-        <p>Community Website</p>
+    <div class="container">
+        <h2>Password Reset</h2>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <label for="email">Enter your email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+            <label for="new_password">Enter your new password:</label><br>
+            <input type="password" id="new_password" name="new_password" required><br>
+            <?php if ($success_message !== ""): ?>
+                <?php if (strpos($success_message, "successful") === false): ?>
+                    <div id="otp_input" class="hidden"> <!-- Hide this by default -->
+                        <label for="otp">Enter OTP:</label><br>
+                        <input type="text" id="otp" name="otp" required><br>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+            <button type="submit">Reset Password</button>
+            <?php if ($success_message !== ""): ?>
+                <?php if (strpos($success_message, "successful") !== false): ?>
+                    <div class="success-message"><?php echo $success_message; ?></div>
+                    <script>
+                        setTimeout(function(){
+                            window.location.href = 'login.php';
+                        }, 3000);
+                    </script>
+                <?php else: ?>
+                    <div class="error-message"><?php echo $success_message; ?></div>
+                    <script>
+                        // Show the OTP input field if there was an error
+                        document.getElementById('otp_input').classList.remove('hidden');
+                    </script>
+                <?php endif; ?>
+            <?php endif; ?>
+        </form>
     </div>
-</div>
-<div class="container">
-    <h2>Password Reset</h2>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <label for="email">Enter your email:</label><br>
-        <input type="email" id="email" name="email" required><br>
-        <label for="new_password">Enter your new password:</label><br>
-        <input type="password" id="new_password" name="new_password" required><br>
-        <?php if ($success_message !== ""): ?>
-            <?php if (strpos($success_message, "successful") === false): ?>
-                <label for="otp">Enter OTP:</label><br>
-                <input type="text" id="otp" name="otp" required><br>
-            <?php endif; ?>
-        <?php endif; ?>
-        <button type="submit">Reset Password</button>
-        <?php if ($success_message !== ""): ?>
-            <?php if (strpos($success_message, "successful") !== false): ?>
-                <div class="success-message"><?php echo $success_message; ?></div>
-                <script>
-                    setTimeout(function(){
-                        window.location.href = 'login.php';
-                    }, 3000);
-                </script>
-            <?php else: ?>
-                <div class="error-message"><?php echo $success_message; ?></div>
-            <?php endif; ?>
-        <?php endif; ?>
-    </form>
-</div>
 </body>
 </html>
 
