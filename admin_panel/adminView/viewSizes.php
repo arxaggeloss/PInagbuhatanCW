@@ -1,5 +1,20 @@
 <?php
 include_once "../config/dbconnect.php";
+
+// Function to fetch events from the database
+function getEventsFromDatabase() {
+    global $conn;
+    $sql = "SELECT id, title, description, start_datetime AS start, end_datetime AS end FROM events";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $events = [];
+        while ($row = $result->fetch_assoc()) {
+            $events[] = $row;
+        }
+        return json_encode($events);
+    }
+    return '[]'; // Return an empty array if no events found
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +42,6 @@ include_once "../config/dbconnect.php";
             <?php
             $sql = "SELECT id, title, description, start_datetime, end_datetime FROM events";
             $result = $conn->query($sql);
-            $count = 1;
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
             ?>
@@ -39,7 +53,6 @@ include_once "../config/dbconnect.php";
                         <td><?= $row["end_datetime"] ?></td>
                     </tr>
             <?php
-                    $count++;
                 }
             }
             ?>
@@ -55,7 +68,12 @@ include_once "../config/dbconnect.php";
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
+            if (!calendarEl) {
+                console.error('Calendar element not found!');
+                return; // Exit function if calendar element is not found
+            }
 
+            console.log('DOM fully loaded. Initializing FullCalendar...');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 events: <?php echo getEventsFromDatabase(); ?>,
@@ -81,22 +99,9 @@ include_once "../config/dbconnect.php";
                 }
             });
 
+            console.log('FullCalendar initialized successfully.');
             calendar.render();
         });
-
-        function getEventsFromDatabase() {
-            <?php
-            $sql = "SELECT id, title, description, start_datetime AS start, end_datetime AS end FROM events";
-            $result = $conn->query($sql);
-            if ($result->num_rows > 0) {
-                $events = [];
-                while ($row = $result->fetch_assoc()) {
-                    $events[] = $row;
-                }
-                echo 'return ' . json_encode($events) . ';';
-            }
-            ?>
-        }
     </script>
 </body>
 
