@@ -219,9 +219,9 @@ function sendOTP($email, $otp) {
         <h2>Password Reset</h2>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <label for="email">Enter your email:</label><br>
-            <input type="email" id="email" name="email" required><br>
+            <input type="email" id="email" name="email" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"><br>
             <label for="new_password">Enter your new password:</label><br>
-            <input type="password" id="new_password" name="new_password" required><br>
+            <input type="password" id="new_password" name="new_password" required value="<?php echo isset($_POST['new_password']) ? htmlspecialchars($_POST['new_password']) : ''; ?>"><br>
             <?php if ($success_message !== ""): ?>
                 <?php if (strpos($success_message, "successful") === false): ?>
                     <?php if (strpos($success_message, "same") === false): ?>
@@ -230,18 +230,18 @@ function sendOTP($email, $otp) {
                             <input type="text" id="otp" name="otp" required><br>
                         </div>
                     <?php endif; ?>
-                <?php endif; ?>
-            <?php endif; ?>
-            <button type="submit">Reset Password</button>
-            <?php if ($success_message !== ""): ?>
-                <?php if (strpos($success_message, "successful") !== false): ?>
+                <?php else: ?>
                     <div class="success-message"><?php echo $success_message; ?></div>
                     <script>
                         setTimeout(function(){
                             window.location.href = 'login.php';
                         }, 3000);
                     </script>
-                <?php else: ?>
+                <?php endif; ?>
+            <?php endif; ?>
+            <button type="submit">Reset Password</button>
+            <?php if ($success_message !== ""): ?>
+                <?php if (strpos($success_message, "same") !== false): ?>
                     <div class="error-message"><?php echo $success_message; ?></div>
                 <?php endif; ?>
             <?php endif; ?>
@@ -249,4 +249,3 @@ function sendOTP($email, $otp) {
     </div>
 </body>
 </html>
-
