@@ -50,14 +50,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_update_otp->bind_param("ss", $new_otp, $email);
         $stmt_update_otp->execute();
 
-        // Send new OTP to the user's email
-        $mail = new PHPMailer(true); // Create a new PHPMailer instance
-        if (sendOTP($mail, $email, $new_otp)) {
-            $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
-            $_SESSION['reset_email'] = $email; // Store user's email in session for verification
-            $success_message = "A 6-digit code has been sent to your email for verification.";
+        // Check if OTP was updated successfully
+        if ($stmt_update_otp->affected_rows > 0) {
+            // Send new OTP to the user's email
+            $mail = new PHPMailer(true); // Create a new PHPMailer instance
+            if (sendOTP($mail, $email, $new_otp)) {
+                $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
+                $_SESSION['reset_email'] = $email; // Store user's email in session for verification
+                $success_message = "A 6-digit code has been sent to your email for verification.";
+            } else {
+                $success_message = "Failed to send OTP. Please try again.";
+            }
         } else {
-            $success_message = "Failed to send OTP. Please try again.";
+            $success_message = "Failed to update OTP in the database.";
         }
     }
 
