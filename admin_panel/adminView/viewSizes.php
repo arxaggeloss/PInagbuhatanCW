@@ -23,7 +23,7 @@ function getEventsFromDatabase() {
 <head>
     <meta charset="UTF-8">
     <title>Events</title>
-    <link href='../../fullcalendar/lib/main.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.css' rel='stylesheet' />
 </head>
 
 <body>
@@ -64,7 +64,7 @@ function getEventsFromDatabase() {
         <div id='calendar'></div>
     </div>
 
-    <script src='../../fullcalendar/lib/main.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
