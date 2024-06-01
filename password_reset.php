@@ -51,7 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_update_otp->execute();
 
         // Send new OTP to the user's email
-        if (sendOTP($email, $new_otp)) {
+        $mail = new PHPMailer(true); // Create a new PHPMailer instance
+        if (sendOTP($mail, $email, $new_otp)) {
             $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
             $_SESSION['reset_email'] = $email; // Store user's email in session for verification
             $success_message = "A 6-digit code has been sent to your email for verification.";
@@ -78,9 +79,7 @@ function generateOTP($length = 6) {
 }
 
 // Function to send OTP via email using PHPMailer
-function sendOTP($email, $otp) {
-    $mail = new PHPMailer(true); // Enable exceptions
-
+function sendOTP($mail, $email, $otp) {
     try {
         // SMTP Configuration
         $mail->isSMTP();
@@ -202,7 +201,7 @@ function sendOTP($email, $otp) {
             margin-top: 10px;
         }
 
-                .error-message {
+        .error-message {
             color: red;
             margin-top: 10px;
         }
@@ -256,3 +255,4 @@ function sendOTP($email, $otp) {
     </div>
 </body>
 </html>
+
