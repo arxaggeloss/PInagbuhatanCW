@@ -29,23 +29,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_password = $_POST['new_password'];
 
     // Check if the new password is the same as the last password
-    $check_last_password_query = "SELECT password FROM user WHERE email = ?";
+    $check_last_password_query = "SELECT password, otp FROM user WHERE email = ?";
     $stmt_check = $conn->prepare($check_last_password_query);
     $stmt_check->bind_param("s", $email);
     $stmt_check->execute();
     $result = $stmt_check->get_result();
     $user_row = $result->fetch_assoc();
     $last_password = $user_row['password'];
+    $last_otp = $user_row['otp'];
 
     if (password_verify($new_password, $last_password)) {
         $success_message = "Password is the same as the last password.";
     } else {
-        // Generate OTP
-        $otp = generateOTP();
+        // Generate new OTP
+        $new_otp = generateOTP();
 
-        // Send OTP to the user's email
-        if (sendOTP($email, $otp)) {
-            $_SESSION['otp'] = $otp; // Store OTP in session for verification
+        // Update OTP in the database
+        $update_otp_query = "UPDATE user SET otp = ? WHERE email = ?";
+        $stmt_update_otp = $conn->prepare($update_otp_query);
+        $stmt_update_otp->bind_param("ss", $new_otp, $email);
+        $stmt_update_otp->execute();
+
+        // Send new OTP to the user's email
+        if (sendOTP($email, $new_otp)) {
+            $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
             $_SESSION['reset_email'] = $email; // Store user's email in session for verification
             $success_message = "A 6-digit code has been sent to your email for verification.";
         } else {
