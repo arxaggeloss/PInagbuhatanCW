@@ -195,95 +195,72 @@ if (isset($_SESSION['loggedin_user_id'])) {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 20px;
-        }
-
-        .profile-left h2 {
-            margin-top: 0;
-            font-size: 48px;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 2; /* Bring the text above the overlay */
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0));
+            opacity: 0.5;
         }
 
         .profile-left img {
-            width: 500px; /* Increase the width */
-            height: 500px; /* Increase the height */
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
             border-radius: 50%;
-            border: 6px solid #fff;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); /* Adjust the box shadow if needed */
+            margin-bottom: 20px;
+        }
+
+        .profile-left h2 {
+            font-size: 48px;
+            color: #FFB802;
             position: relative;
-            z-index: 2; /* Bring the image above the overlay */
+            z-index: 1;
         }
 
         .profile-right {
+            background-color: #FFB802; /* Orange background */
+            padding: 60px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 60px;
         }
 
-        .profile-right p {
-            margin-bottom: 20px;
-            font-size: 22px;
-            color: #333;
+        .user-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .user-form input,
+        .user-form select {
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+
+        .user-form input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-form input[type="submit"]:hover {
+            background-color: #555;
         }
 
         .upload-btn {
-            padding: 15px 30px;
-            background-color: #FF6B6B; /* Red button background */
+            background-color: #3498db;
             color: #fff;
-            border: none;
-            border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-decoration: none;
-            display: inline-block;
             font-size: 18px;
         }
 
         .upload-btn:hover {
-            background-color: #FF8E8E; /* Lighter red on hover */
-        }
-
-        /* Form styles */
-        .user-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .user-form input[type="text"],
-        .user-form input[type="date"],
-        .user-form select {
-            width: calc(100% - 20px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .user-form input[type="submit"] {
-            padding: 15px;
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 18px;
-        }
-
-        .user-form input[type="submit"]:hover {
             background-color: #2980b9;
         }
 
@@ -381,94 +358,92 @@ if (isset($_SESSION['loggedin_user_id'])) {
 </head>
 <body>
 <div class="header">
-        <div class="icon">
-            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
-        </div>
-        <div class="title">
-            <h2>Barangay Pinagbuhatan</h2>
-            <p>Community Website</p>
-        </div>
-        <div class="buttons-container">
-            <div class="buttons">
-                <button class="news-button" onclick="goToNewsPage()"><img src="images/index.png"> News & Updates</button>
-                <button class="medical-assistance-button" onclick="goToMedicalAssistancePage()"><img src="images/medical.png"> Medical Assistance</button>
-                <button class="helpdesk-button" onclick="goToHelpdeskPage()"><img src="images/helpdesk.png"> Helpdesk</button>
-                <button class="profile-button" onclick="goToProfilePage()"><img src="images/user.png"> User profile</button>
-            </div>
+    <div class="icon">
+        <img src="images/Pasig.png" alt="Icon" style="width: 100px; height: auto;">
+    </div>
+    <div class="title">
+        <h2>Barangay Pinagbuhatan</h2>
+        <p>Community Website</p>
+    </div>
+    <div class="buttons-container">
+        <div class="buttons">
+            <button class="news-button" onclick="goToNewsPage()"><img src="images/index.png"> News & Updates</button>
+            <button class="medical-assistance-button" onclick="goToMedicalAssistancePage()"><img src="images/medical.png"> Medical Assistance</button>
+            <button class="helpdesk-button" onclick="goToHelpdeskPage()"><img src="images/helpdesk.png"> Helpdesk</button>
+            <button class="profile-button" onclick="goToProfilePage()"><img src="images/user.png"> User profile</button>
         </div>
     </div>
-    <div class="user-profile">                                                                          
-        <div class="profile-left">
-            <h2>User Profile</h2>
-            <?php
-            // Check if the user has a profile image set
-            if (isset($row['profile_image']) && !empty($row['profile_image'])) {
-                echo '<img src="' . htmlspecialchars($row['profile_image']) . '" alt="Profile Picture">';
-            } else {
-                // Display a default profile image if no image is set
-                echo '<img src="default_profile.jpg" alt="Profile Picture">';
-            }
-            ?>
-        </div>
+</div>
+<div class="user-profile">
+    <div class="profile-left">
+        <h2>User Profile</h2>
+        <?php
+        if (isset($row['profile_image']) && !empty($row['profile_image'])) {
+            echo '<img src="' . htmlspecialchars($row['profile_image']) . '" alt="Profile Picture">';
+        } else {
+            echo '<img src="default_profile.jpg" alt="Profile Picture">';
+        }
+        ?>
+    </div>
 
-        <div class="profile-right">
-            <form class="user-form" action="update_profile.php" method="post" enctype="multipart/form-data">
-                <input type="text" name="username" placeholder="Username" value="<?php echo htmlspecialchars($username); ?>">
-                <input type="text" name="address" placeholder="Address" value="<?php echo htmlspecialchars($address); ?>">
-                <input type="date" name="birthday" placeholder="Birthday" value="<?php echo htmlspecialchars($birthday); ?>">
-                <input type="number" name="age" placeholder="Age" value="<?php echo htmlspecialchars($age); ?>">
-                <select name="gender">
-                    <option value="" disabled>Select Gender</option>
-                    <option value="male" <?php if($gender === 'male') echo 'selected'; ?>>Male</option>
-                    <option value="female" <?php if($gender === 'female') echo 'selected'; ?>>Female</option>
-                    <option value="other" <?php if($gender === 'other') echo 'selected'; ?>>Other</option>
-                </select>
-                <input type="file" name="fileToUpload" id="fileToUpload">
-                <input type="submit" value="Update Profile" name="submit" class="upload-btn">
-            </form>
+    <div class="profile-right">
+        <form class="user-form" action="update_profile.php" method="post" enctype="multipart/form-data">
+            <input type="text" name="username" placeholder="Username" value="<?php echo htmlspecialchars($username); ?>">
+            <input type="text" name="address" placeholder="Address" value="<?php echo htmlspecialchars($address); ?>">
+            <input type="date" name="birthday" placeholder="Birthday" value="<?php echo htmlspecialchars($birthday); ?>">
+            <input type="number" name="age" placeholder="Age" value="<?php echo htmlspecialchars($age); ?>">
+            <select name="gender">
+                <option value="" disabled>Select Gender</option>
+                <option value="male" <?php if($gender === 'male') echo 'selected'; ?>>Male</option>
+                <option value="female" <?php if($gender === 'female') echo 'selected'; ?>>Female</option>
+                <option value="other" <?php if($gender === 'other') echo 'selected'; ?>>Other</option>
+            </select>
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="submit" value="Update Profile" name="submit" class="upload-btn">
+        </form>
 
-            <!-- Display user details -->
-            <div class="user-details">
-                <?php if (isset($username)) : ?>
-                    <p><strong>Username:</strong> <?php echo htmlspecialchars($username); ?></p>
-                    <p><strong>Address:</strong> <?php echo htmlspecialchars($address); ?></p>
-                    <p><strong>Birthday:</strong> <?php echo htmlspecialchars($birthday); ?></p>
-                    <p><strong>Age:</strong> <?php echo htmlspecialchars($age); ?></p>
-                    <p><strong>Gender:</strong> <?php echo htmlspecialchars($gender); ?></p>
-                <?php else : ?>
-                    <p>User data not available.</p>
-                <?php endif; ?>
-            </div>
+        <!-- Display user details -->
+        <div class="user-details">
+            <?php if (isset($username)) : ?>
+                <p><strong>Username:</strong> <?php echo htmlspecialchars($username); ?></p>
+                <p><strong>Address:</strong> <?php echo htmlspecialchars($address); ?></p>
+                <p><strong>Birthday:</strong> <?php echo htmlspecialchars($birthday); ?></p>
+                <p><strong>Age:</strong> <?php echo htmlspecialchars($age); ?></p>
+                <p><strong>Gender:</strong> <?php echo htmlspecialchars($gender); ?></p>
+            <?php else : ?>
+                <p>User data not available.</p>
+            <?php endif; ?>
         </div>
     </div>
-    <div class="login-section" style="text-align: center; margin-top: 860px;">
-        <p><a href="login.php" class="login-btn">Sign Out</a> Go Back to Login</p>
-    </div>
-    <div class="notification-tray">
-        <?php foreach ($notifications as $notification) : ?>
-            <div class="notification-item">
-                <div class="notification-type"><?php echo htmlspecialchars($notification['type']); ?></div>
-                <div class="notification-message"><?php echo htmlspecialchars($notification['message']); ?></div>
-                <div class="notification-timestamp"><?php echo htmlspecialchars($notification['created_at']); ?></div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-    <script>
-        function goToNewsPage() {
-            window.location.href = "index.html";
-        }
+</div>
+<div class="login-section" style="text-align: center; margin-top: 860px;">
+    <p><a href="login.php" class="login-btn">Sign Out</a> Go Back to Login</p>
+</div>
+<div class="notification-tray">
+    <?php foreach ($notifications as $notification) : ?>
+        <div class="notification-item">
+            <div class="notification-type"><?php echo htmlspecialchars($notification['type']); ?></div>
+            <div class="notification-message"><?php echo htmlspecialchars($notification['message']); ?></div>
+            <div class="notification-timestamp"><?php echo htmlspecialchars($notification['created_at']); ?></div>
+        </div>
+    <?php endforeach; ?>
+</div>
+<script>
+    function goToNewsPage() {
+        window.location.href = "index.html";
+    }
 
-        function goToMedicalAssistancePage() {
-            window.location.href = "medicalassistance.html";
-        }
+    function goToMedicalAssistancePage() {
+        window.location.href = "medicalassistance.html";
+    }
 
-        function goToHelpdeskPage() {
-            window.location.href = "helpdesk.html";
-        }
+    function goToHelpdeskPage() {
+        window.location.href = "helpdesk.html";
+    }
 
-        function goToProfilePage() {
-            window.location.href = "user_profile.php";
-        }
-    </script>
+    function goToProfilePage() {
+        window.location.href = "user_profile.php";
+    }
+</script>
 </body>
 </html>
