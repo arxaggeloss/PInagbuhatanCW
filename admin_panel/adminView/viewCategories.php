@@ -63,11 +63,12 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
 
         // Sending email
         if ($mail->send()) {
-            // Email sent successfully, now insert notification into the database
-            $insertNotificationSql = "INSERT INTO notifications (notification_subject, notification_text, notification_status) VALUES (?, ?, 1)";
-            $stmt = $conn->prepare($insertNotificationSql);
-            $stmt->bind_param("ss", $subject, $notificationText);
-            $stmt->execute();
+// Insert the notification into the database
+$insertNotificationSql = "INSERT INTO notifications (message, is_read, created_at, user_id, email) VALUES (?, ?, NOW(), ?, ?)";
+$stmt = $conn->prepare($insertNotificationSql);
+$isRead = 0; // Assuming the notification is initially unread
+$stmt->bind_param("siss", $notificationText, $isRead, $userId, $to);
+$stmt->execute();
 
             echo 'Email and notification sent successfully to ' . $to;
         } else {
