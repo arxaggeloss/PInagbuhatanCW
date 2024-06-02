@@ -8,9 +8,9 @@ $username = $address = $birthday = $age = $gender = "";
 if (isset($_SESSION['loggedin_user_id'])) {
     // Database connection parameters
     $servername = "pinagbuhatancw.mysql.database.azure.com";
-$username_db = "pinagbuhatancw";
-$password_db = 'pa$$word1';
-$database = "tandaandb";
+    $username_db = "pinagbuhatancw";
+    $password_db = 'pa$$word1';
+    $database = "tandaandb";
 
     // Create a connection to the database
     $conn = new mysqli($servername, $username_db, $password_db, $database);
@@ -20,7 +20,7 @@ $database = "tandaandb";
     }
 
     // Fetch user information based on the logged-in user's ID
-    $stmt = $conn->prepare("SELECT * FROM user WHERE userid = ?"); // Use your appropriate column name for user ID
+    $stmt = $conn->prepare("SELECT * FROM user WHERE userid = ?");
     $stmt->bind_param("i", $_SESSION['loggedin_user_id']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -41,7 +41,22 @@ $database = "tandaandb";
         echo "User not found!<br>";
     }
 
+    // Fetch notifications for the logged-in user
+    $notifications_stmt = $conn->prepare("SELECT * FROM notifications WHERE user_id = ?");
+    $notifications_stmt->bind_param("i", $_SESSION['loggedin_user_id']);
+    $notifications_stmt->execute();
+    $notifications_result = $notifications_stmt->get_result();
+
+    // Check if notifications were fetched successfully
+    if ($notifications_result) {
+        // Count the number of notifications
+        $num_notifications = $notifications_result->num_rows;
+    } else {
+        $num_notifications = 0;
+    }
+
     $stmt->close();
+    $notifications_stmt->close();
     $conn->close();
 }
 ?>
@@ -53,86 +68,88 @@ $database = "tandaandb";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
-         /* Header styling */
-    .header {
-        display: flex; /* Use flexbox */
-        align-items: center; /* Align items vertically */
-        background-color: #252D6F;
-        color: #fff;
-        padding: 20px 20px;
-        position: relative;
-    }
+        /* CSS styles */
+        /* Header styling */
+        .header {
+            display: flex; /* Use flexbox */
+            align-items: center; /* Align items vertically */
+            background-color: #252D6F;
+            color: #fff;
+            padding: 20px 20px;
+            position: relative;
+        }
 
-    .header .icon {
-        color: #fff;
-        font-size: 24px;
-        margin-right: -49px; /* Adjust negative margin */
-        position: relative; /* Set position to relative */
-        z-index: 1; /* Ensure logo is above the title */
-    }
+        .header .icon {
+            color: #fff;
+            font-size: 24px;
+            margin-right: -49px; /* Adjust negative margin */
+            position: relative; /* Set position to relative */
+            z-index: 1; /* Ensure logo is above the title */
+        }
 
-    .header .title {
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* Center vertically */
-        margin-left: 17px; /* Adjust the margin */
-        background-color: #9eacb4; /* Light blue background */
-        color: #FFB802; /* Orange text color */
-        padding: 10px;
-        border-radius: 15px;
-        border: 2px solid orangered; /* Orange-red border */
-        position: relative;
-        z-index: 0; /* Ensure title is below the logo */
-    }
+        .header .title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center vertically */
+            margin-left: 17px; /* Adjust the margin */
+            background-color: #9eacb4; /* Light blue background */
+            color: #FFB802; /* Orange text color */
+            padding: 10px;
+            border-radius: 15px;
+            border: 2px solid orangered; /* Orange-red border */
+            position: relative;
+            z-index: 0; /* Ensure title is below the logo */
+        }
 
-    .header .title h2 {
-        margin-left: 20px;
-        font-size: 47px;
-        font-weight: bold;
-    }
+        .header .title h2 {
+            margin-left: 20px;
+            font-size: 47px;
+            font-weight: bold;
+        }
 
-    .header .title p {
-        margin-left: 20px;
-        font-size: 27px;
-    }
+        .header .title p {
+            margin-left: 20px;
+            font-size: 27px;
+        }
 
-    .header .buttons-container {
-        display: flex;
-        margin-left: auto; /* Push buttons to the right */
-        padding-right: 0px; /* Add some padding on the right */
-        background-color: #e0f2f1; /* Light blue background */
-        border-radius: 5px;
-        border: 3px solid white; /* Orange-red border */
-    }
+        .header .buttons-container {
+            display: flex;
+            margin-left: auto; /* Push buttons to the right */
+            padding-right: 0px; /* Add some padding on the right */
+            background-color: #e0f2f1; /* Light blue background */
+            border-radius: 5px;
+            border: 3px solid white; /* Orange-red border */
+        }
 
-    .header .buttons {
-        display: flex;
-        gap: 0; /* Remove the gap between buttons */
-    }
+        .header .buttons {
+            display: flex;
+            gap: 0; /* Remove the gap between buttons */
+        }
 
-    .header .buttons button {
-        background-color: orange;
-        color: white;
-        border: none;
-        border-radius: 2px; /* Rounder corners */
-        padding: 20px 20px; /* Increased padding */
-        cursor: pointer;
-        font-size: 16px; /* Increased font size */
-        font-weight: bold;
-        display: flex; /* Use flexbox */
-        flex-direction: column; /* Arrange icon and text vertically */
-        align-items: center; /* Center items horizontally */
-    }
+        .header .buttons button {
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 2px; /* Rounder corners */
+            padding: 20px 20px; /* Increased padding */
+            cursor: pointer;
+            font-size: 16px; /* Increased font size */
+            font-weight: bold;
+            display: flex; /* Use flexbox */
+            flex-direction: column; /* Arrange icon and text vertically */
+            align-items: center; /* Center items horizontally */
+        }
 
-    .header .buttons button:last-child {
-        margin-right: 0; /* Remove margin from last button */
-    }
+        .header .buttons button:last-child {
+            margin-right: 0; /* Remove margin from last button */
+        }
 
-    .header .buttons button img {
-        width: 30px; /* Increased icon size */
-        height: auto;
-        margin-bottom: 5px; /* Add margin between icon and text */
-    }
+        .header .buttons button img {
+            width: 30px; /* Increased icon size */
+            height: auto;
+            margin-bottom: 5px; /* Add margin between icon and text */
+        }
+
         /* CSS styles for the user profile */
         body {
             font-family: "Arial", sans-serif;
@@ -163,44 +180,44 @@ $database = "tandaandb";
         .profile-left {
             padding-top: 0px;
             margin-left:0px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 60px;
-    text-align: center;
-}
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            text-align: center;
+        }
 
-.profile-left::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 20px;
-}
+        .profile-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+        }
 
-.profile-left h2 {
-    margin-top: 0;
-    font-size: 48px;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    position: relative;
-    z-index: 2; /* Bring the text above the overlay */
-}
+        .profile-left h2 {
+            margin-top: 0;
+            font-size: 48px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2; /* Bring the text above the overlay */
+        }
 
-.profile-left img {
-    width: 500px; /* Increase the width */
-    height: 500px; /* Increase the height */
-    border-radius: 50%;
-    border: 6px solid #fff;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); /* Adjust the box shadow if needed */
-    position: relative;
-    z-index: 2; /* Bring the image above the overlay */
-}
+        .profile-left img {
+            width: 500px; /* Increase the width */
+            height: 500px; /* Increase the height */
+            border-radius: 50%;
+            border: 6px solid #fff;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); /* Adjust the box shadow if needed */
+            position: relative;
+            z-index: 2; /* Bring the image above the overlay */
+        }
 
         .profile-right {
             display: flex;
@@ -247,6 +264,14 @@ $database = "tandaandb";
         .user-form input[type="text"],
         .user-form input[type="date"],
         .user-form select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .user-form input[type="number"] {
             width: calc(100% - 20px);
             padding: 10px;
             border: 1px solid #ccc;
@@ -325,89 +350,105 @@ $database = "tandaandb";
 </head>
 <body>
 <div class="header">
-        <div class="icon">
-            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
-        </div>
-        <div class="title">
-            <h2>Barangay Pinagbuhatan</h2>
-            <p>Community Website</p>
-        </div>
-        <div class="buttons-container">
-            <div class="buttons">
-                <button class="news-button" onclick="goToNewsPage()"><img src="images/index.png"> News & Updates</button>
-                <button class="medical-assistance-button" onclick="goToMedicalAssistancePage()"><img src="images/medical.png"> Medical Assistance</button>
-                <button class="helpdesk-button" onclick="goToHelpdeskPage()"><img src="images/helpdesk.png"> Helpdesk</button>
-                <button class="profile-button" onclick="goToProfilePage()"><img src="images/user.png"> User profile</button>
-            </div>
+    <div class="icon">
+        <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+    </div>
+    <div class="title">
+        <h2>Barangay Pinagbuhatan</h2>
+        <p>Community Website</p>
+    </div>
+    <div class="buttons-container">
+        <div class="buttons">
+            <button class="news-button" onclick="goToNewsPage()"><img src="images/index.png"> News & Updates</button>
+            <button class="medical-assistance-button" onclick="goToMedicalAssistancePage()"><img src="images/medical.png"> Medical Assistance</button>
+            <button class="helpdesk-button" onclick="goToHelpdeskPage()"><img src="images/helpdesk.png"> Helpdesk</button>
+            <button class="profile-button" onclick="goToProfilePage()"><img src="images/user.png"> User profile</button>
         </div>
     </div>
-    <div class="user-profile">                                                                          
-    <div class="profile-left">
-    <h2>User Profile</h2>
-    <?php
-    // Check if the user has a profile image set
-    if (isset($row['profile_image']) && !empty($row['profile_image'])) {
-        echo '<img src="' . htmlspecialchars($row['profile_image']) . '" alt="Profile Picture">';
-    } else {
-        // Display a default profile image if no image is set
-        echo '<img src="default_profile.jpg" alt="Profile Picture">';
-    }
-    ?>
 </div>
+<div class="user-profile">                                                                          
+    <div class="profile-left">
+        <h2>User Profile</h2>
+        <?php
+        // Check if the user has a profile image set
+        if (isset($row['profile_image']) && !empty($row['profile_image'])) {
+            echo '<img src="' . htmlspecialchars($row['profile_image']) . '" alt="Profile Picture">';
+        } else {
+            // Display a default profile image if no image is set
+            echo '<img src="default_profile.jpg" alt="Profile Picture">';
+        }
+        ?>
+    </div>
+    <div class="profile-right">
+        <form class="user-form" action="update_profile.php" method="post" enctype="multipart/form-data">
+            <input type="text" name="username" placeholder="Username" value="<?php echo htmlspecialchars($username); ?>">
+            <input type="text" name="address" placeholder="Address" value="<?php echo htmlspecialchars($address); ?>">
+            <input type="date" name="birthday" placeholder="Birthday" value="<?php echo htmlspecialchars($birthday); ?>">
+            <input type="number" name="age" placeholder="Age" value="<?php echo htmlspecialchars($age); ?>">
+            <select name="gender">
+                <option value="" disabled>Select Gender</option>
+                <option value="male" <?php if($gender === 'male') echo 'selected'; ?>>Male</option>
+                <option value="female" <?php if($gender === 'female') echo 'selected'; ?>>Female</option>
+                <option value="other" <?php if($gender === 'other') echo 'selected'; ?>>Other</option>
+            </select>
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="submit" value="Update Profile" name="submit" class="upload-btn">
+        </form>
 
-        <div class="profile-right">
-            <form class="user-form" action="update_profile.php" method="post" enctype="multipart/form-data">
-                <input type="text" name="username" placeholder="Username" value="<?php echo htmlspecialchars($username); ?>">
-                <input type="text" name="address" placeholder="Address" value="<?php echo htmlspecialchars($address); ?>">
-                <input type="date" name="birthday" placeholder="Birthday" value="<?php echo htmlspecialchars($birthday); ?>">
-                <input type="number" name="age" placeholder="Age" value="<?php echo htmlspecialchars($age); ?>">
-                <select name="gender">
-                    <option value="" disabled>Select Gender</option>
-                    <option value="male" <?php if($gender === 'male') echo 'selected'; ?>>Male</option>
-                    <option value="female" <?php if($gender === 'female') echo 'selected'; ?>>Female</option>
-                    <option value="other" <?php if($gender === 'other') echo 'selected'; ?>>Other</option>
-                </select>
-                <input type="file" name="fileToUpload" id="fileToUpload">
-                <input type="submit" value="Update Profile" name="submit" class="upload-btn">
-            </form>
-
-            <!-- Display user details -->
-            <div class="user-details">
-                <?php if (isset($username)) : ?>
-                    <p><strong>Username:</strong> <?php echo htmlspecialchars($username); ?></p>
-                    <p><strong>Address:</strong> <?php echo htmlspecialchars($address); ?></p>
-                    <p><strong>Birthday:</strong> <?php echo htmlspecialchars($birthday); ?></p>
-                    <p><strong>Age:</strong> <?php echo htmlspecialchars($age); ?></p>
-                    <p><strong>Gender:</strong> <?php echo htmlspecialchars($gender); ?></p>
-                <?php else : ?>
-                    <p>User data not available.</p>
-                <?php endif; ?>
-            </div>
+                <!-- Display user details -->
+        <div class="user-details">
+            <?php if (isset($username)) : ?>
+                <p><strong>Username:</strong> <?php echo htmlspecialchars($username); ?></p>
+                <p><strong>Address:</strong> <?php echo htmlspecialchars($address); ?></p>
+                <p><strong>Birthday:</strong> <?php echo htmlspecialchars($birthday); ?></p>
+                <p><strong>Age:</strong> <?php echo htmlspecialchars($age); ?></p>
+                <p><strong>Gender:</strong> <?php echo htmlspecialchars($gender); ?></p>
+            <?php else : ?>
+                <p>User data not available.</p>
+            <?php endif; ?>
+        </div>
+        <!-- Display notifications -->
+        <div class="notifications">
+            <h3>Notifications</h3>
+            <ul>
+                <?php
+                if ($num_notifications > 0) {
+                    while ($notification = $notifications_result->fetch_assoc()) {
+                        echo "<li>" . htmlspecialchars($notification['message']) . "</li>";
+                    }
+                } else {
+                    echo "<li>No notifications</li>";
+                }
+                ?>
+            </ul>
         </div>
     </div>
-    <div class="login-section" style="text-align: center; margin-top: 860px;">
+</div>
+<div class="login-section" style="text-align: center; margin-top: 860px;">
     <p><a href="login.php" class="login-btn">Sign Out</a>  Go Back to Login</p>
-    </div>
-    <script>
-        function goToNewsPage() {
-            // Define the action for the News & Updates button
-            window.location.href = "index.html"; // Change the URL to the appropriate page
-        }
-    
-        function goToMedicalAssistancePage() {
-            // Define the action for the Medical Assistance button
-            window.location.href = "medicalassistance.html"; // Change the URL to the appropriate page
-        }
-    
-        function goToHelpdeskPage() {
-            // Define the action for the Helpdesk button
-            window.location.href = "helpdesk.html"; // Change the URL to the appropriate page
-        }
-    
-        function goToProfilePage() {
-            // Define the action for the User Profile button
-            window.location.href = "user_profile.php"; // Change the URL to the appropriate page
-        }
-    </script>
+</div>
+<script>
+    function goToNewsPage() {
+        // Define the action for the News & Updates button
+        window.location.href = "index.html"; // Change the URL to the appropriate page
+    }
+
+    function goToMedicalAssistancePage() {
+        // Define the action for the Medical Assistance button
+        window.location.href = "medicalassistance.html"; // Change the URL to the appropriate page
+    }
+
+    function goToHelpdeskPage() {
+        // Define the action for the Helpdesk button
+        window.location.href = "helpdesk.html"; // Change the URL to the appropriate page
+    }
+
+    function goToProfilePage() {
+        // Define the action for the User Profile button
+        window.location.href = "user_profile.php"; // Change the URL to the appropriate page
+    }
+</script>
 </body>
 </html>
+
+
