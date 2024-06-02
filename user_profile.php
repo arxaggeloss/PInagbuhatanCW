@@ -336,6 +336,32 @@ $conn->close();
         .login-btn:hover {
             background-color: #FF8E8E; /* Lighter red on hover */
         }
+        .notification-container {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    margin-top: 20px; /* Adjust margin as needed */
+    width: 100%; /* Adjust width as needed */
+}
+
+.notification-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.notification-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notification-container ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
     </style>
 </head>
 <body>
@@ -405,7 +431,8 @@ $conn->close();
             </div>
         </div>
     </div>
-    <!-- Notification Container -->
+   <!-- Notification Container -->
+<div class="user-profile profile-right"> <!-- Add the profile-right class to align the notification container -->
     <div class="notification-container">
         <h2>Notifications</h2>
         <ul>
@@ -414,6 +441,7 @@ $conn->close();
             <?php endwhile; ?>
         </ul>
     </div>
+</div>
     <!-- Sign Out Button -->
     <div class="login-section" style="text-align: center; margin-top: 20px;">
         <p><a href="login.php" class="login-btn">Sign Out</a> Go Back to Login</p>
