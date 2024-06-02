@@ -30,20 +30,24 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
     global $mail, $conn;
 
     try {
+        // SMTP Configuration
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
+        $mail->Host = 'smtp.gmail.com'; // Your SMTP server
         $mail->SMTPAuth = true;
-        $mail->Username = 'staanatandaan@gmail.com';
-        $mail->Password = 'nycgsvxjrhrndoab';
-        $mail->Port = 587;
-        $mail->SMTPSecure = 'tls';
+        $mail->Username = 'staanatandaan@gmail.com'; // Your SMTP username (sender email)
+        $mail->Password = 'nycgsvxjrhrndoab'; // Your SMTP password
+        $mail->Port = 587; // Adjust the SMTP port if needed
+        $mail->SMTPSecure = 'tls'; // Enable TLS encryption, 'ssl' is also possible
 
-        $mail->setFrom('staanatandaan@gmail.com', 'PinagbuhatanCW');
-        $mail->addAddress($to);
+        // Sender and recipient details
+        $mail->setFrom('staanatandaan@gmail.com', 'PinagbuhatanCW'); // Replace with sender's email and name
+        $mail->addAddress($to); // Use the provided user's email
 
+        // Email content
         $mail->isHTML(true);
         $mail->Subject = $subject;
 
+        // Professional and courteous message for the recipient
         $recipientMessage = "<p>Dear Valued User,</p>";
         $recipientMessage .= "<p>Your helpdesk request has been successfully processed.</p>";
         $recipientMessage .= "<p>We acknowledge the importance of your query and assure you that our team is diligently working to address it. You will receive further updates and assistance shortly.</p>";
@@ -51,13 +55,17 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
         $recipientMessage .= "<p>Best regards,</p>";
         $recipientMessage .= "<p>PinagbuhatanCW Team</p>";
 
+        // Combined message (original message + recipient message)
         $fullMessage = $message . $recipientMessage;
+
         $mail->Body = $fullMessage;
 
+        // Sending email
         if ($mail->send()) {
-            $insertNotificationSql = "INSERT INTO notifications (notification_subject, notification_text, notification_status) VALUES (?, ?, 1)";
+            // Email sent successfully, now insert notification into the database
+            $insertNotificationSql = "INSERT INTO notifications (notification_subject, notification_text, notification_status, email) VALUES (?, ?, 1, ?)";
             $stmt = $conn->prepare($insertNotificationSql);
-            $stmt->bind_param("ss", $subject, $notificationText);
+            $stmt->bind_param("sss", $subject, $notificationText, $to);
             $stmt->execute();
 
             echo 'Email and notification sent successfully to ' . $to;
