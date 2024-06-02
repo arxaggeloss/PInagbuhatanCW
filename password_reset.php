@@ -10,6 +10,7 @@ require 'PHPMailer-master/src/SMTP.php';
 session_start();
 
 $success_message = ""; // Initialize success message variable
+$error_message = ""; // Initialize error message variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Database connection parameters
@@ -38,25 +39,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $last_password = $user_row['password'];
 
     if (password_verify($new_password, $last_password)) {
-        $success_message = "Password is the same as the last password.";
+        $error_message = "Password is the same as the last password.";
     } else {
-        // Generate new OTP
-        $new_otp = generateOTP();
+        // Check if OTP is submitted for verification
+        if (isset($_POST['otp'])) {
+            $submitted_otp = $_POST['otp'];
+            $stored_otp = $user_row['otp'];
 
-        // Update OTP in the database
-        $update_otp_query = "UPDATE user SET otp = ? WHERE email = ?";
-        $stmt_update_otp = $conn->prepare($update_otp_query);
-        $stmt_update_otp->bind_param("ss", $new_otp, $email);
-        $stmt_update_otp->execute();
+            if ($submitted_otp === $stored_otp) {
+                // Update password in the database
+                $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+                $update_password_query = "UPDATE user SET password = ? WHERE email = ?";
+                $stmt_update_password = $conn->prepare($update_password_query);
+                $stmt_update_password->bind_param("ss", $hashed_password, $email);
+                $stmt_update_password->execute();
 
-        // Send new OTP to the user's email
-        $mail = new PHPMailer(true); // Create a new PHPMailer instance
-        if (sendOTP($mail, $email, $new_otp)) {
-            $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
-            $_SESSION['reset_email'] = $email; // Store user's email in session for verification
-            $success_message = "Password reset successful. A 6-digit code has been sent to your email for verification.";
+                $success_message = "Password reset successful. Redirecting to login page...";
+                header("refresh:3;url=login.php"); // Redirect to login page after 3 seconds
+            } else {
+                $error_message = "Invalid OTP. Please try again.";
+            }
         } else {
-            $success_message = "Failed to send OTP. Please try again.";
+            // Generate new OTP
+            $new_otp = generateOTP();
+
+            // Update OTP in the database
+            $update_otp_query = "UPDATE user SET otp = ? WHERE email = ?";
+            $stmt_update_otp = $conn->prepare($update_otp_query);
+            $stmt_update_otp->bind_param("ss", $new_otp, $email);
+            $stmt_update_otp->execute();
+
+            // Send new OTP to the user's email
+            $mail = new PHPMailer(true); // Create a new PHPMailer instance
+            if (sendOTP($mail, $email, $new_otp)) {
+                $_SESSION['otp'] = $new_otp; // Store new OTP in session for verification
+                $_SESSION['reset_email'] = $email; // Store user's email in session for verification
+                $success_message = "A 6-digit code has been sent to your email for verification.";
+            } else {
+                $error_message = "Failed to send OTP. Please try again.";
+            }
         }
     }
 
@@ -227,26 +248,20 @@ function sendOTP($mail, $email, $otp) {
             <input type="email" id="email" name="email" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"><br>
             <label for="new_password">Enter your new password:</label><br>
             <input type="password" id="new_password" name="new_password" required value="<?php echo isset($_POST['new_password']) ? htmlspecialchars($_POST['new_password']) : ''; ?>"><br>
-            <?php if ($success_message !== ""): ?>
-                <?php if (strpos($success_message, "same") === false && strpos($success_message, "successful") === false): ?>
-                    <div id="otp_input"> <!-- Remove the "hidden" class -->
-                        <label for="otp">Enter OTP:</label><br>
-                        <input type="text" id="otp" name="otp" required><br>
-                    </div>
-                <?php endif; ?>
-                <?php if (strpos($success_message, "successful") !== false): ?>
-                    <div class="success-message"><?php echo $success_message; ?></div>
-                    <script>
-                        setTimeout(function(){
-                            window.location.href = 'login.php';
-                        }, 3000);
-                    </script>
-                <?php else: ?>
-                    <div class="error-message"><?php echo $success_message; ?></div>
-                <?php endif; ?>
+            <?php if (!empty($success_message) && !isset($_POST['otp'])): ?>
+                <div id="otp_input">
+                    <label for="otp">Enter OTP:</label><br>
+                    <input type="text" id="otp" name="otp" required><br>
+                </div>
             <?php endif; ?>
             <button type="submit">Reset Password</button>
         </form>
+        <?php if (!empty($success_message)): ?>
+            <div class="success-message"><?php echo $success_message; ?></div>
+        <?php endif; ?>
+        <?php if (!empty($error_message)): ?>
+            <div class="error-message"><?php echo $error_message; ?></div>
+        <?php endif; ?>
     </div>
 </body>
 </html>
