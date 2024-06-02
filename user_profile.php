@@ -8,9 +8,9 @@ $username = $address = $birthday = $age = $gender = "";
 if (isset($_SESSION['loggedin_user_id'])) {
     // Database connection parameters
     $servername = "pinagbuhatancw.mysql.database.azure.com";
-$username_db = "pinagbuhatancw";
-$password_db = 'pa$$word1';
-$database = "tandaandb";
+    $username_db = "pinagbuhatancw";
+    $password_db = 'pa$$word1';
+    $database = "tandaandb";
 
     // Create a connection to the database
     $conn = new mysqli($servername, $username_db, $password_db, $database);
@@ -20,7 +20,7 @@ $database = "tandaandb";
     }
 
     // Fetch user information based on the logged-in user's ID
-    $stmt = $conn->prepare("SELECT * FROM user WHERE userid = ?"); // Use your appropriate column name for user ID
+    $stmt = $conn->prepare("SELECT * FROM user WHERE userid = ?");
     $stmt->bind_param("i", $_SESSION['loggedin_user_id']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -42,8 +42,21 @@ $database = "tandaandb";
     }
 
     $stmt->close();
-    $conn->close();
+
+    // Fetch notifications for the logged-in user
+    $notification_query = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
+    $stmt = $conn->prepare($notification_query);
+    $stmt->bind_param("i", $_SESSION['loggedin_user_id']);
+    $stmt->execute();
+    $notifications_result = $stmt->get_result();
+} else {
+    // Redirect to login page if user is not logged in
+    header("Location: login.php");
+    exit;
 }
+
+// Close the database connection
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -53,86 +66,87 @@ $database = "tandaandb";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
-         /* Header styling */
-    .header {
-        display: flex; /* Use flexbox */
-        align-items: center; /* Align items vertically */
-        background-color: #252D6F;
-        color: #fff;
-        padding: 20px 20px;
-        position: relative;
-    }
+        /* Header styling */
+        .header {
+            display: flex; /* Use flexbox */
+            align-items: center; /* Align items vertically */
+            background-color: #252D6F;
+            color: #fff;
+            padding: 20px 20px;
+            position: relative;
+        }
 
-    .header .icon {
-        color: #fff;
-        font-size: 24px;
-        margin-right: -49px; /* Adjust negative margin */
-        position: relative; /* Set position to relative */
-        z-index: 1; /* Ensure logo is above the title */
-    }
+        .header .icon {
+            color: #fff;
+            font-size: 24px;
+            margin-right: -49px; /* Adjust negative margin */
+            position: relative; /* Set position to relative */
+            z-index: 1; /* Ensure logo is above the title */
+        }
 
-    .header .title {
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* Center vertically */
-        margin-left: 17px; /* Adjust the margin */
-        background-color: #9eacb4; /* Light blue background */
-        color: #FFB802; /* Orange text color */
-        padding: 10px;
-        border-radius: 15px;
-        border: 2px solid orangered; /* Orange-red border */
-        position: relative;
-        z-index: 0; /* Ensure title is below the logo */
-    }
+        .header .title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center vertically */
+            margin-left: 17px; /* Adjust the margin */
+            background-color: #9eacb4; /* Light blue background */
+            color: #FFB802; /* Orange text color */
+            padding: 10px;
+            border-radius: 15px;
+            border: 2px solid orangered; /* Orange-red border */
+            position: relative;
+            z-index: 0; /* Ensure title is below the logo */
+        }
 
-    .header .title h2 {
-        margin-left: 20px;
-        font-size: 47px;
-        font-weight: bold;
-    }
+        .header .title h2 {
+            margin-left: 20px;
+            font-size: 47px;
+            font-weight: bold;
+        }
 
-    .header .title p {
-        margin-left: 20px;
-        font-size: 27px;
-    }
+        .header .title p {
+            margin-left: 20px;
+            font-size: 27px;
+        }
 
-    .header .buttons-container {
-        display: flex;
-        margin-left: auto; /* Push buttons to the right */
-        padding-right: 0px; /* Add some padding on the right */
-        background-color: #e0f2f1; /* Light blue background */
-        border-radius: 5px;
-        border: 3px solid white; /* Orange-red border */
-    }
+        .header .buttons-container {
+            display: flex;
+            margin-left: auto; /* Push buttons to the right */
+            padding-right: 0px; /* Add some padding on the right */
+            background-color: #e0f2f1; /* Light blue background */
+            border-radius: 5px;
+            border: 3px solid white; /* Orange-red border */
+        }
 
-    .header .buttons {
-        display: flex;
-        gap: 0; /* Remove the gap between buttons */
-    }
+        .header .buttons {
+            display: flex;
+            gap: 0; /* Remove the gap between buttons */
+        }
 
-    .header .buttons button {
-        background-color: orange;
-        color: white;
-        border: none;
-        border-radius: 2px; /* Rounder corners */
-        padding: 20px 20px; /* Increased padding */
-        cursor: pointer;
-        font-size: 16px; /* Increased font size */
-        font-weight: bold;
-        display: flex; /* Use flexbox */
-        flex-direction: column; /* Arrange icon and text vertically */
-        align-items: center; /* Center items horizontally */
-    }
+        .header .buttons button {
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 2px; /* Rounder corners */
+            padding: 20px 20px; /* Increased padding */
+            cursor: pointer;
+            font-size: 16px; /* Increased font size */
+            font-weight: bold;
+            display: flex; /* Use flexbox */
+            flex-direction: column; /* Arrange icon and text vertically */
+            align-items: center; /* Center items horizontally */
+        }
 
-    .header .buttons button:last-child {
-        margin-right: 0; /* Remove margin from last button */
-    }
+        .header .buttons button:last-child {
+            margin-right: 0; /* Remove margin from last button */
+        }
 
-    .header .buttons button img {
-        width: 30px; /* Increased icon size */
-        height: auto;
-        margin-bottom: 5px; /* Add margin between icon and text */
-    }
+        .header .buttons button img {
+            width: 30px; /* Increased icon size */
+            height: auto;
+            margin-bottom: 5px; /* Add margin between icon and text */
+        }
+
         /* CSS styles for the user profile */
         body {
             font-family: "Arial", sans-serif;
@@ -143,12 +157,12 @@ $database = "tandaandb";
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-        }   
+        }
 
         .user-profile {
             margin-left: 150px;
             margin-top: 100px;
-            padding-top:0px;
+            padding-top: 0px;
             width: 80%;
             background-color: #fff; /* White background */
             border-radius: 20px;
@@ -162,45 +176,45 @@ $database = "tandaandb";
 
         .profile-left {
             padding-top: 0px;
-            margin-left:0px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 60px;
-    text-align: center;
-}
+            margin-left: 0px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            text-align: center;
+        }
 
-.profile-left::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 20px;
-}
+        .profile-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+        }
 
-.profile-left h2 {
-    margin-top: 0;
-    font-size: 48px;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    position: relative;
-    z-index: 2; /* Bring the text above the overlay */
-}
+        .profile-left h2 {
+            margin-top: 0;
+            font-size: 48px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2; /* Bring the text above the overlay */
+        }
 
-.profile-left img {
-    width: 500px; /* Increase the width */
-    height: 500px; /* Increase the height */
-    border-radius: 50%;
-    border: 6px solid #fff;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); /* Adjust the box shadow if needed */
-    position: relative;
-    z-index: 2; /* Bring the image above the overlay */
-}
+        .profile-left img {
+            width: 500px; /* Increase the width */
+            height: 500px; /* Increase the height */
+            border-radius: 50%;
+            border: 6px solid #fff;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); /* Adjust the box shadow if needed */
+            position: relative;
+            z-index: 2; /* Bring the image above the overlay */
+        }
 
         .profile-right {
             display: flex;
@@ -291,6 +305,7 @@ $database = "tandaandb";
                 font-size: 36px;
             }
         }
+
         .logo {
             position: absolute;
             top: 20px;
@@ -300,8 +315,8 @@ $database = "tandaandb";
             cursor: pointer;
         }
 
-          /* Style for the login button and link */
-         .login-btn {
+        /* Style for the login button and link */
+        .login-btn {
             padding: 15px 30px;
             background-color: #FF6B6B; /* Red button background */
             color: #fff;
@@ -324,14 +339,18 @@ $database = "tandaandb";
     </style>
 </head>
 <body>
-<div class="header">
+    <!-- Header content here -->
+    <div class="header">
+        <!-- Logo -->
         <div class="icon">
-            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;"> <!-- Adjust width to half the current size -->
+            <img src="IMAGES/Pasig.png" alt="Icon" style="width: 100px; height: auto;">
         </div>
+        <!-- Title -->
         <div class="title">
             <h2>Barangay Pinagbuhatan</h2>
             <p>Community Website</p>
         </div>
+        <!-- Navigation buttons -->
         <div class="buttons-container">
             <div class="buttons">
                 <button class="news-button" onclick="goToNewsPage()"><img src="images/index.png"> News & Updates</button>
@@ -341,19 +360,20 @@ $database = "tandaandb";
             </div>
         </div>
     </div>
-    <div class="user-profile">                                                                          
-    <div class="profile-left">
-    <h2>User Profile</h2>
-    <?php
-    // Check if the user has a profile image set
-    if (isset($row['profile_image']) && !empty($row['profile_image'])) {
-        echo '<img src="' . htmlspecialchars($row['profile_image']) . '" alt="Profile Picture">';
-    } else {
-        // Display a default profile image if no image is set
-        echo '<img src="default_profile.jpg" alt="Profile Picture">';
-    }
-    ?>
-</div>
+    <!-- User Profile and Notification Container -->
+    <div class="user-profile">
+        <div class="profile-left">
+            <h2>User Profile</h2>
+            <?php
+            // Check if the user has a profile image set
+            if (isset($row['profile_image']) && !empty($row['profile_image'])) {
+                echo '<img src="' . htmlspecialchars($row['profile_image']) . '" alt="Profile Picture">';
+            } else {
+                // Display a default profile image if no image is set
+                echo '<img src="default_profile.jpg" alt="Profile Picture">';
+            }
+            ?>
+        </div>
 
         <div class="profile-right">
             <form class="user-form" action="update_profile.php" method="post" enctype="multipart/form-data">
@@ -363,9 +383,9 @@ $database = "tandaandb";
                 <input type="number" name="age" placeholder="Age" value="<?php echo htmlspecialchars($age); ?>">
                 <select name="gender">
                     <option value="" disabled>Select Gender</option>
-                    <option value="male" <?php if($gender === 'male') echo 'selected'; ?>>Male</option>
-                    <option value="female" <?php if($gender === 'female') echo 'selected'; ?>>Female</option>
-                    <option value="other" <?php if($gender === 'other') echo 'selected'; ?>>Other</option>
+                    <option value="male" <?php if ($gender === 'male') echo 'selected'; ?>>Male</option>
+                    <option value="female" <?php if ($gender === 'female') echo 'selected'; ?>>Female</option>
+                    <option value="other" <?php if ($gender === 'other') echo 'selected'; ?>>Other</option>
                 </select>
                 <input type="file" name="fileToUpload" id="fileToUpload">
                 <input type="submit" value="Update Profile" name="submit" class="upload-btn">
@@ -385,25 +405,36 @@ $database = "tandaandb";
             </div>
         </div>
     </div>
-    <div class="login-section" style="text-align: center; margin-top: 860px;">
-    <p><a href="login.php" class="login-btn">Sign Out</a>  Go Back to Login</p>
+    <!-- Notification Container -->
+    <div class="notification-container">
+        <h2>Notifications</h2>
+        <ul>
+            <?php while ($notification = $notifications_result->fetch_assoc()) : ?>
+                <li><?php echo htmlspecialchars($notification['message']); ?></li>
+            <?php endwhile; ?>
+        </ul>
     </div>
+    <!-- Sign Out Button -->
+    <div class="login-section" style="text-align: center; margin-top: 20px;">
+        <p><a href="login.php" class="login-btn">Sign Out</a> Go Back to Login</p>
+    </div>
+    <!-- JavaScript -->
     <script>
         function goToNewsPage() {
             // Define the action for the News & Updates button
             window.location.href = "index.html"; // Change the URL to the appropriate page
         }
-    
+
         function goToMedicalAssistancePage() {
             // Define the action for the Medical Assistance button
             window.location.href = "medicalassistance.html"; // Change the URL to the appropriate page
         }
-    
+
         function goToHelpdeskPage() {
             // Define the action for the Helpdesk button
             window.location.href = "helpdesk.html"; // Change the URL to the appropriate page
         }
-    
+
         function goToProfilePage() {
             // Define the action for the User Profile button
             window.location.href = "user_profile.php"; // Change the URL to the appropriate page
