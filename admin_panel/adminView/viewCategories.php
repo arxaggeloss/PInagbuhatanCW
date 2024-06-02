@@ -11,6 +11,7 @@ require '../../PHPMailer-master/src/Exception.php';
 require '../../PHPMailer-master/src/PHPMailer.php';
 require '../../PHPMailer-master/src/SMTP.php';
 
+
 // Initialize PHPMailer
 $mail = new PHPMailer(true);
 
@@ -163,50 +164,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if (isset($_POST['send_reply'])) {
-        $medical_assistance_id = $_POST['medical_assistance_id'];
-        $email = $_POST['email'];
+if (isset($_POST['send_reply'])) {
+    $medical_assistance_id = $_POST['medical_assistance_id'];
+    $email = $_POST['email'];
 
-        // Fetch relevant data for sending email notification
-        $fetchSql = "SELECT medical_assistance_id, patient_name, email, medical_condition, created_at FROM medical_assistance WHERE medical_assistance_id=?";
-        $fetchStmt = $conn->prepare($fetchSql);
-        $fetchStmt->bind_param("i", $medical_assistance_id);
-        $fetchStmt->execute();
-        $result = $fetchStmt->get_result();
-        $row = $result->fetch_assoc();
+    // Fetch relevant data for sending email notification
+    $fetchSql = "SELECT medical_assistance_id, patient_name, email, medical_condition, created_at FROM medical_assistance WHERE medical_assistance_id=?";
+    $fetchStmt = $conn->prepare($fetchSql);
+    $fetchStmt->bind_param("i", $medical_assistance_id);
+    $fetchStmt->execute();
+    $result = $fetchStmt->get_result();
+    $row = $result->fetch_assoc();
 
-        // Construct the email content
-        $subject = "Reply to Your Medical Assistance Request";
-        $message = "ID: " . $row['medical_assistance_id'] . "<br>";
-        $message .= "Patient Name: " . $row['patient_name'] . "<br>";
-        $message .= "Email: " . $row['email'] . "<br>";
-        $message .= "Medical Condition: " . $row['medical_condition'] . "<br>";
-        $message .= "Submission Date: " . $row['created_at'] . "<br><br>";
-        $message .= "Your message:<br>"; // Add bullet point for the message
-        $message .= "<ul><li>" . nl2br($_POST['message']) . "</li></ul>"; // Add the message from the admin reply
+    // Construct the email content
+    $subject = "Reply to Your Medical Assistance Request";
+    $message = "ID: " . $row['medical_assistance_id'] . "<br>";
+    $message .= "Patient Name: " . $row['patient_name'] . "<br>";
+    $message .= "Email: " . $row['email'] . "<br>";
+    $message .= "Medical Condition: " . $row['medical_condition'] . "<br>";
+    $message .= "Submission Date: " . $row['created_at'] . "<br><br>";
+    $message .= "Your message:<br>"; // Add bullet point for the message
+    $message .= "<ul><li>" . nl2br($_POST['message']) . "</li></ul>"; // Add the message from the admin reply
 
-        // Define the notification text
-        $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
+    // Define the notification text
+    $notificationText = "You have received a reply to your medical assistance request with ID: $medical_assistance_id.";
 
-        // Send email
-        sendEmailAndNotification($email, $subject, $message, $notificationText);
-    }
+    // Send email
+    sendEmailAndNotification($email, $subject, $message, $notificationText);
 }
-
-// Insert Notification for New Medical Assistance Request
-$stmt = $conn->prepare("INSERT INTO notifications (message, user_id) VALUES (?, ?)");
-$stmt->bind_param("si", $message, $_SESSION['loggedin_user_id']);
-
-// Set the message content
-$message = "New medical assistance request submitted.";
-
-// Execute the query
-$stmt->execute();
-
-// Close the statement
-$stmt->close();
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
