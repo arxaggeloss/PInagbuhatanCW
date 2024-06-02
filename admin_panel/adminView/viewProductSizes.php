@@ -241,17 +241,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </table>
 
         <!-- Reply Form (hidden by default) -->
-     <div id="reply-form-wrapper" style="display: none;">
-    <h3>Send Reply</h3>
-    <form id="reply-form">
-        <input type="hidden" name="help_desk_id" id="reply-help-desk-id">
-        <input type="hidden" name="email" id="reply-email">
-        <label for="reply-message">Message:</label>
-        <textarea name="message" id="reply-message" rows="4" cols="50"></textarea><br>
-        <button type="submit">Send Reply</button>
-        <button type="button" id="cancel-reply">Cancel</button>
-    </form>
-</div>
+        <div id="reply-form-wrapper" style="display: none;">
+            <h3>Send Reply</h3>
+            <form id="reply-form-inner">
+                <input type="hidden" name="help_desk_id" id="reply-help-desk-id">
+                <input type="hidden" name="email" id="reply-email">
+                <label for="reply-message">Message:</label>
+                <textarea name="message" id="reply-message" rows="4" cols="50"></textarea><br>
+                <button type="submit">Send Reply</button>
+                <button type="button" id="cancel-reply">Cancel</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -314,14 +314,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $('#reply-help-desk-id').val(helpDeskId);
                 $('#reply-email').val(email);
 
-                $('#reply-form').show();
+                $('#reply-form-wrapper').show();
             });
 
             $('#cancel-reply').click(function () {
-                $('#reply-form').hide();
+                $('#reply-form-wrapper').hide();
             });
 
-            $('#reply-form').submit(function (e) {
+            $('#reply-form-inner').submit(function (e) {
                 e.preventDefault();
 
                 $.ajax({
@@ -335,7 +335,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     },
                     success: function (response) {
                         alert('Reply sent successfully.');
-                        $('#reply-form').hide();
+                        $('#reply-form-wrapper').hide();
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
