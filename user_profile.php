@@ -336,13 +336,15 @@ $conn->close();
         .login-btn:hover {
             background-color: #FF8E8E; /* Lighter red on hover */
         }
-        .notification-container {
+       .notification-container {
     background-color: #fff;
     border-radius: 20px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     padding: 20px;
     margin-top: 20px; /* Adjust margin as needed */
     width: 100%; /* Adjust width as needed */
+    max-height: 400px; /* Set a fixed height for the container */
+    overflow-y: auto; /* Add a vertical scrollbar if content overflows */
 }
 
 .notification-container h2 {
@@ -353,6 +355,7 @@ $conn->close();
 .notification-container ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .notification-container ul li {
@@ -361,7 +364,6 @@ $conn->close();
     line-height: 1.5;
     color: #333;
 }
-
     </style>
 </head>
 <body>
