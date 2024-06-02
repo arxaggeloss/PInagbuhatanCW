@@ -36,7 +36,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt_check->get_result();
     $user_row = $result->fetch_assoc();
     $last_password = $user_row['password'];
-    $last_otp = $user_row['otp'];
 
     if (password_verify($new_password, $last_password)) {
         $success_message = "Password is the same as the last password.";
@@ -187,7 +186,7 @@ function sendOTP($mail, $email, $otp) {
         }
 
         button {
-           padding: 10px;
+            padding: 10px;
             cursor: pointer;
             width: calc(100% - 20px);
             border-radius: 5px;
@@ -223,29 +222,27 @@ function sendOTP($mail, $email, $otp) {
     </div>
     <div class="container">
         <h2>Password Reset</h2>
-        <?php if ($success_message !== ""): ?>
-            <?php if (strpos($success_message, "successful") !== false): ?>
-                <div class="success-message"><?php echo $success_message; ?></div>
-                <script>
-                    setTimeout(function(){
-                        window.location.href = 'login.php';
-                    }, 3000);
-                </script>
-            <?php else: ?>
-                <div class="error-message"><?php echo $success_message; ?></div>
-            <?php endif; ?>
-        <?php endif; ?>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <label for="email">Enter your email:</label><br>
             <input type="email" id="email" name="email" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"><br>
             <label for="new_password">Enter your new password:</label><br>
             <input type="password" id="new_password" name="new_password" required value="<?php echo isset($_POST['new_password']) ? htmlspecialchars($_POST['new_password']) : ''; ?>"><br>
             <?php if ($success_message !== ""): ?>
-                <?php if (strpos($success_message, "successful") === false): ?>
+                <?php if (strpos($success_message, "same") === false && strpos($success_message, "successful") === false): ?>
                     <div id="otp_input"> <!-- Remove the "hidden" class -->
                         <label for="otp">Enter OTP:</label><br>
                         <input type="text" id="otp" name="otp" required><br>
                     </div>
+                <?php endif; ?>
+                <?php if (strpos($success_message, "successful") !== false): ?>
+                    <div class="success-message"><?php echo $success_message; ?></div>
+                    <script>
+                        setTimeout(function(){
+                            window.location.href = 'login.php';
+                        }, 3000);
+                    </script>
+                <?php else: ?>
+                    <div class="error-message"><?php echo $success_message; ?></div>
                 <?php endif; ?>
             <?php endif; ?>
             <button type="submit">Reset Password</button>
@@ -253,4 +250,3 @@ function sendOTP($mail, $email, $otp) {
     </div>
 </body>
 </html>
-
