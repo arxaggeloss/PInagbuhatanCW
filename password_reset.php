@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $last_password = $user_row['password'];
 
     if (password_verify($new_password, $last_password)) {
-        $error_message = "Password is the same as the last password.";
+        $error_message = "Password reset unsuccessful.";
     } else {
         // Check if OTP is submitted for verification
         if (isset($_POST['otp'])) {
