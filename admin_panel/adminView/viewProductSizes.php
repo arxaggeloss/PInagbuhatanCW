@@ -26,6 +26,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Corrected sendEmailAndNotification function
 function sendEmailAndNotification($to, $subject, $message, $notificationText) {
     global $mail, $conn;
 
@@ -65,7 +66,9 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
             // Email sent successfully, now insert notification into the database
             $insertNotificationSql = "INSERT INTO notifications (message, is_read, created_at, user_id, email) VALUES (?, ?, NOW(), ?, ?)";
             $stmt = $conn->prepare($insertNotificationSql);
-            $stmt->bind_param("sss", $subject, $notificationText, $to);
+            // Corrected binding parameters
+            $isRead = 0; // Assuming the notification is initially unread
+            $stmt->bind_param("siss", $notificationText, $isRead, $userId, $to);
             $stmt->execute();
 
             echo 'Email and notification sent successfully to ' . $to;
@@ -76,6 +79,7 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
         echo 'Mailer Error: ' . $mail->ErrorInfo;
     }
 }
+
 
 function logAction($userId, $action) {
     global $conn;
@@ -237,17 +241,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </table>
 
         <!-- Reply Form (hidden by default) -->
-        <div id="reply-form" style="display: none;">
-            <h3>Send Reply</h3>
-            <form id="reply-form">
-                <input type="hidden" name="help_desk_id" id="reply-help-desk-id">
-                <input type="hidden" name="email" id="reply-email">
-                <label for="reply-message">Message:</label>
-                <textarea name="message" id="reply-message" rows="4" cols="50"></textarea><br>
-                <button type="submit">Send Reply</button>
-                <button type="button" id="cancel-reply">Cancel</button>
-            </form>
-        </div>
+     <div id="reply-form-wrapper" style="display: none;">
+    <h3>Send Reply</h3>
+    <form id="reply-form">
+        <input type="hidden" name="help_desk_id" id="reply-help-desk-id">
+        <input type="hidden" name="email" id="reply-email">
+        <label for="reply-message">Message:</label>
+        <textarea name="message" id="reply-message" rows="4" cols="50"></textarea><br>
+        <button type="submit">Send Reply</button>
+        <button type="button" id="cancel-reply">Cancel</button>
+    </form>
+</div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
