@@ -43,12 +43,12 @@ if (isset($_SESSION['loggedin_user_id'])) {
 
     $stmt->close();
 
-    // Fetch notifications for the logged-in user
-    $notification_query = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
-    $stmt = $conn->prepare($notification_query);
-    $stmt->bind_param("i", $_SESSION['loggedin_user_id']);
-    $stmt->execute();
-    $notifications_result = $stmt->get_result();
+   
+        // Fetch notifications for the logged-in user's email
+        $stmt_notifications = $conn->prepare("SELECT * FROM notifications WHERE email = ?");
+        $stmt_notifications->bind_param("s", $row['email']);
+        $stmt_notifications->execute();
+        $notifications_result = $stmt_notifications->get_result();
 } else {
     // Redirect to login page if user is not logged in
     header("Location: login.php");
