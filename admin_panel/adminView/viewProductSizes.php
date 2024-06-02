@@ -63,7 +63,7 @@ function sendEmailAndNotification($to, $subject, $message, $notificationText) {
         // Sending email
         if ($mail->send()) {
             // Email sent successfully, now insert notification into the database
-            $insertNotificationSql = "INSERT INTO notifications (notification_subject, notification_text, notification_status, email) VALUES (?, ?, 1, ?)";
+            $insertNotificationSql = "INSERT INTO notifications (message, is_read, created_at, user_id, email) VALUES (?, ?, NOW(), ?, ?)";
             $stmt = $conn->prepare($insertNotificationSql);
             $stmt->bind_param("sss", $subject, $notificationText, $to);
             $stmt->execute();
