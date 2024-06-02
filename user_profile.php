@@ -415,7 +415,9 @@ if (isset($_SESSION['loggedin_user_id'])) {
             <!-- End of Notification Container -->
         </div>
     </div>
-
+ <div class="login-section" style="text-align: center; margin-top: 860px;">
+    <p><a href="login.php" class="login-btn">Sign Out</a>  Go Back to Login</p>
+    </div>
     <script>
         function goToNewsPage() {
             // Redirect to the news page
